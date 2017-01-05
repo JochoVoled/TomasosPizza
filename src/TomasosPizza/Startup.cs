@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using TomasosPizza.Models;
 
 namespace TomasosPizza
 {
@@ -29,6 +27,8 @@ namespace TomasosPizza
         {
             // Add framework services.
             services.AddMvc();
+            var conn = @"Server=JSHQ;Database=Tomasos;Trusted_Connection=True"; // (localdb)\mssqllocaldb
+            services.AddDbContext<TomasosContext>(opt => opt.UseSqlServer(conn));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,7 +53,7 @@ namespace TomasosPizza
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Navigation}/{action=MenuView}/{id?}");
             });
         }
     }

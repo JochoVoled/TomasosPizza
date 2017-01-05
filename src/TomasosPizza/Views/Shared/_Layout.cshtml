@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - TomasosPizza</title>
+    <title>@ViewData["Title"] - Tomasos Pizza</title>
 
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -17,31 +17,41 @@
     </environment>
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">TomasosPizza</a>
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                <a asp-area="" asp-controller="Navigation" asp-action="MenuView" class="navbar-brand">Tomasos Pizza</a>
+
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    @if (true)
+            {
+                        <li><a asp-area="" asp-controller="Navigation" asp-action="LogInView">Log In</a></li>
+                        <li><a asp-area="" asp-controller="Navigation" asp-action="RegisterView">Join In</a></li>
+                    }
+                    else
+                    {
+                        @*<li><a asp-area="" asp-controller="User" asp-action="LogOut">Log Out</a></li>*@
+                        <li><a asp-area="" asp-controller="Navigation" asp-action="UserEdit">Edit Profile</a></li>
+                    }
                 </ul>
             </div>
         </div>
-    </div>
+    </nav>
     <div class="container body-content">
-        @RenderBody()
-        <hr />
+        <main>
+            @RenderBody()
+        </main>
+        <br />
         <footer>
-            <p>&copy; 2017 - TomasosPizza</p>
+            <p>&copy; 2017 - Built by Johannes Smidelöv</p>
         </footer>
     </div>
 
