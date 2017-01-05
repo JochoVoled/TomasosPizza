@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{14F01B90-BA07-4A8B-AB8E-EEE7EDE56AF5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4736BBB0-9DF2-4FA8-B818-F6FA8459473B}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TomasosPizza", "src\TomasosPizza\TomasosPizza.xproj", "{6FCCBD10-EA8C-4FE4-9C3A-E7E414301B17}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6FCCBD10-EA8C-4FE4-9C3A-E7E414301B17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FCCBD10-EA8C-4FE4-9C3A-E7E414301B17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FCCBD10-EA8C-4FE4-9C3A-E7E414301B17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FCCBD10-EA8C-4FE4-9C3A-E7E414301B17}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6FCCBD10-EA8C-4FE4-9C3A-E7E414301B17} = {14F01B90-BA07-4A8B-AB8E-EEE7EDE56AF5}
+	EndGlobalSection
+EndGlobal
