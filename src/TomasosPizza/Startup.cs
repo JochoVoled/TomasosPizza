@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using TomasosPizza.Models;
 
 namespace TomasosPizza
 {
@@ -27,8 +26,9 @@ namespace TomasosPizza
         {
             // Add framework services.
             services.AddMvc();
-            var conn = @"Server=JSHQ;Database=Tomasos;Trusted_Connection=True"; // (localdb)\mssqllocaldb
-            services.AddDbContext<TomasosContext>(opt => opt.UseSqlServer(conn));
+            var conn = @"Server=JSHQ;Database=Tomasos;Trusted_Connection=True;"; // (localdb)\mssqllocaldb
+            services.AddDbContext<TomasosPizza.Models.TomasosContext>(opt => opt.UseSqlServer(conn));
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,7 +46,7 @@ namespace TomasosPizza
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
+            app.UseSession();
             app.UseStaticFiles();
 
             app.UseMvc(routes =>

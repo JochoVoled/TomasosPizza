@@ -1,1 +1,32 @@
-﻿
+﻿@model TomasosPizza.Models.Kund
+
+<form asp-controller="User" asp-action="CreateUser" asp-route-User="@Model" method="post">
+    <label asp-for="AnvandarNamn">Användarnamn</label>
+    <input asp-for="AnvandarNamn" required/>
+    <br />
+    <label asp-for="Namn">Namn</label>
+    <input asp-for="Namn" pattern="^[a-zåäöA-ZÖÅÖ\s]+$"/>
+    <br />
+    <label asp-for="Email">E-mail</label>
+    <input asp-for="AnvandarNamn" />
+    <br />
+    <label asp-for="Telefon">Telefon</label>
+    <input asp-for="Telefon" pattern="^\d+$"/>
+    <br />
+    <label asp-for="Gatuadress">Adress</label>
+    <input asp-for="Gatuadress" />
+    <br />
+    <label asp-for="Postnr">Postnummer</label>
+    <input asp-for="Postnr" pattern="^\d{5}$" />
+    <br />
+    <label asp-for="Postort">Postort</label>
+    <input asp-for="Postort" />
+    <br />
+    <label asp-for="Losenord">Lösenord</label>
+    <input asp-for="Losenord" required maxlength="30"/>
+    <br />
+    @*<label asp-for="Losenord">Upprepa lösenord</label>
+    <input asp-for="Losenord" />*@
+
+    <input type="button" value="Registrera"/>
+</form>
