@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TomasosPizza.Models;
@@ -24,7 +22,7 @@ namespace TomasosPizza.Controllers
             {
                 if (IsValidLogIn(user.AnvandarNamn, user.Losenord))
                 {
-                    HttpContext.Session.SetString("User", user.KundId.ToString());
+                    HttpContext.Session.SetString("User", user.AnvandarNamn);
                     return RedirectToAction("MenuView", "Navigation");
                 }
             }
@@ -45,19 +43,38 @@ namespace TomasosPizza.Controllers
             return false;
         }
 
-        public bool CreateUser(Kund newUser)
+        public IActionResult CreateUser(Kund newUser)
         {
-            if (_context.Kund.Any(u => u.AnvandarNamn == newUser.AnvandarNamn)) return false;
+            if (_context.Kund.Any(u => u.AnvandarNamn == newUser.AnvandarNamn))
+                return RedirectToAction("RegisterView", "Navigation");
             // todo enter further validation here
-            // todo complete data here
-            _context.Kund.Add(newUser);
-            _context.SaveChanges();
-            return true;
+            if (ModelState.IsValid)
+            {
+                // todo complete data here
+                _context.Kund.Add(newUser);
+                _context.SaveChanges();
+                HttpContext.Session.SetString("User",newUser.AnvandarNamn);
+                return RedirectToAction("MenuView", "Navigation");
+            }
+            return RedirectToAction("RegisterView","Navigation");
         }
         public bool UpdateUser(Kund updatedUser)
         {
-            // todo remember how to update data with EF
-            return true;
+            // todo debug if this truly updates
+            try
+            {
+                string userName = HttpContext.Session.GetString("User");
+                Kund user = _context.Kund.First(u => u.AnvandarNamn == userName);
+                user = updatedUser;
+                _context.SaveChanges();
+                return true;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+
         }
     }
 }

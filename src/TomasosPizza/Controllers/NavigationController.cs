@@ -54,11 +54,10 @@ namespace TomasosPizza.Controllers
             return View();
         }
 
-        // todo figure out what value to pass in order to get Kund, and how to pass that in from any view
-        // Can I use the nav-bar as a partial view, whose menues are updated on LogIn, and holds LoggedInUser as model value?
-        public IActionResult UserEdit(string userName)
+        public IActionResult UserEdit()
         {
-            Kund user = _context.Kund.SingleOrDefault(u => u.AnvandarNamn == userName);
+            string userName = HttpContext.Session.GetString("User");
+            Kund user = _context.Kund.First(u => u.AnvandarNamn == userName);
             return View(user);
         }
     }
