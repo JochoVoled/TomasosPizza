@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TomasosPizza.Models;
 
@@ -21,19 +22,26 @@ namespace TomasosPizza.Controllers
         {
             if (ModelState.IsValid)
             {
-                
-            }
-            if (IsValidLogIn(user.AnvandarNamn,user.Losenord))
-            {
-                return RedirectToAction("MenuView","Navigation");
+                if (IsValidLogIn(user.AnvandarNamn, user.Losenord))
+                {
+                    HttpContext.Session.SetString("User", user.KundId.ToString());
+                    return RedirectToAction("MenuView", "Navigation");
+                }
             }
             return RedirectToAction("LogInView","Navigation");
         }
-        private bool IsValidLogIn(string UserName, string Password)
+
+        public IActionResult LogOut()
         {
-            var matchingUserName = _context.Kund.Single(u => u.AnvandarNamn == UserName);
+            HttpContext.Session.SetString("User", "");
+            return RedirectToAction("MenuView", "Navigation");
+        }
+
+        private bool IsValidLogIn(string userName, string password)
+        {
+            var matchingUserName = _context.Kund.Single(u => u.AnvandarNamn == userName);
             if (matchingUserName == null) return false;
-            if (matchingUserName.Losenord == Password) return true;
+            if (matchingUserName.Losenord == password) return true;
             return false;
         }
 

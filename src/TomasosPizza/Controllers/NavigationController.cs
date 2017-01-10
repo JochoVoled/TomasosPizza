@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TomasosPizza.Models;
 using TomasosPizza.ViewModels;
-
-// For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace TomasosPizza.Controllers
 {
@@ -57,9 +56,10 @@ namespace TomasosPizza.Controllers
 
         // todo figure out what value to pass in order to get Kund, and how to pass that in from any view
         // Can I use the nav-bar as a partial view, whose menues are updated on LogIn, and holds LoggedInUser as model value?
-        public IActionResult UserEdit()
+        public IActionResult UserEdit(string userName)
         {
-            return View();
+            Kund user = _context.Kund.SingleOrDefault(u => u.AnvandarNamn == userName);
+            return View(user);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using System.Runtime.InteropServices.ComTypes
+@using Microsoft.AspNetCore.Http
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -31,15 +33,15 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    @if (true)
-            {
+                    @if (Context.Session.GetString("User") == null)
+                    {
                         <li><a asp-area="" asp-controller="Navigation" asp-action="LogInView">Log In</a></li>
                         <li><a asp-area="" asp-controller="Navigation" asp-action="RegisterView">Join In</a></li>
                     }
                     else
                     {
-                        @*<li><a asp-area="" asp-controller="User" asp-action="LogOut">Log Out</a></li>*@
-                        <li><a asp-area="" asp-controller="Navigation" asp-action="UserEdit">Edit Profile</a></li>
+                        <li><a asp-area="" asp-controller="User" asp-action="LogOut">Log Out</a></li>
+                        <li><a asp-area="" asp-controller="Navigation" asp-action="UserEdit" asp-route-userName='Context.Session.GetString("User")'>Edit Profile</a></li>
                     }
                 </ul>
             </div>
