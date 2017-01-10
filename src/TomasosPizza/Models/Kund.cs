@@ -12,14 +12,18 @@ namespace TomasosPizza.Models
         }
         [Key]
         public int KundId { get; set; }
-        [RegularExpression(@"^[a-zåäöA-ZÖÅÖ\s]+$",ErrorMessage = "Namnet kan bara bestå av bokstäver A-Ö samt blanksteg")]
+
+        [RegularExpression(@"^[a-zåäöA-ZÅÄÖ\s]+$",ErrorMessage = "Namnet kan bara bestå av bokstäver A-Ö samt blanksteg")]
         public string Namn { get; set; }
         public string Gatuadress { get; set; }
+
         [RegularExpression(@"^\d{5}$",ErrorMessage = "Postnumret måste bestå av fem siffror, utan blanksteg")]
         public string Postnr { get; set; }
         public string Postort { get; set; }
+
         [EmailAddress(ErrorMessage = "Din epostadress motsvarar inte förväntad formattering")]
         public string Email { get; set; }
+
         [Phone(ErrorMessage = "Ditt lösenord motsvarar inte förväntad formattering (i utveckling)")]
         public string Telefon { get; set; }
 

@@ -29,20 +29,13 @@ namespace TomasosPizza.Controllers
             if (HttpContext.Session.GetString("Order") != null)
             {
                 string str = HttpContext.Session.GetString("Order");
-                model.Order = JsonConvert.DeserializeObject<Dictionary<Matratt, int>>(str);
+                model.Order = JsonConvert.DeserializeObject<List<BestallningMatratt>>(str);
             }
             
             return View(model);
         }
 
-        //[HttpPost]
-        //public IActionResult MenuView(MenuViewModel.MenuOption option)
-        //{
-
-        //    return View(model);
-        //}
-
-        public IActionResult OrderView()
+        public IActionResult OrderView(List<BestallningMatratt> order)
         {
             // get the order data
             // get the logged in customer
@@ -61,6 +54,9 @@ namespace TomasosPizza.Controllers
         {
             return View();
         }
+
+        // todo figure out what value to pass in order to get Kund, and how to pass that in from any view
+        // Can I use the nav-bar as a partial view, whose menues are updated on LogIn, and holds LoggedInUser as model value?
         public IActionResult UserEdit()
         {
             return View();

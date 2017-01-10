@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TomasosPizza.Models;
-using TomasosPizza.ViewModels;
 
 namespace TomasosPizza.Controllers
 {
@@ -13,26 +11,31 @@ namespace TomasosPizza.Controllers
     {
         public IActionResult AddToOrder(Matratt option)
         {
-            // todo Are Linq-queries the reason for these Exceptions? If so, how do I work with my session data?
-            Dictionary<Matratt,int> order = Deserialize();
-            Matratt hasOrdered;
-            try
-            {
-                hasOrdered = order.Keys.Single(p => p.MatrattId == option.MatrattId);
-            }
-            catch
-            {
-                hasOrdered = null;
-            }
-            
+            List<BestallningMatratt> order = Deserialize();
+            //BestallningMatratt hasOrdered;
+            //try
+            //{
+            //    hasOrdered = order.SingleOrDefault(p => p.MatrattId == option.MatrattId);
+            //}
+            //catch
+            //{
+            //    hasOrdered = order.First(p => p.MatrattId == option.MatrattId);
+            //}
+            BestallningMatratt hasOrdered = order.SingleOrDefault(p => p.MatrattId == option.MatrattId);
             if (hasOrdered!=null)
             {
-                int numOrder = order.First(p => p.Key == hasOrdered).Value;
-                order[hasOrdered] = numOrder + 1;
+                //int numOrder = order.First(p => p.MatrattId == hasOrdered.MatrattId).Antal;
+                hasOrdered.Antal += 1;
             }
             else
             {
-                order.Add(option, 0);
+                hasOrdered = new BestallningMatratt
+                {
+                    Matratt = option,
+                    MatrattId = option.MatrattId,
+                    Antal = 1,
+                };
+                order.Add(hasOrdered);
             }
             
             Reserialize(order);
@@ -42,28 +45,37 @@ namespace TomasosPizza.Controllers
 
         public IActionResult RemoveFromOrder(Matratt option)
         {
-            Dictionary<Matratt,int> order = Deserialize();
-            order.Remove(option);
+            List<BestallningMatratt> order = Deserialize();
+            BestallningMatratt remove = order.Find(o => o.MatrattId == option.MatrattId);
+            if (remove.Antal<=1)
+            {
+                order.Remove(remove);
+            }
+            else
+            {
+                remove.Antal -= 1;
+            }
+            
             Reserialize(order);
             return RedirectToAction("MenuView", "Navigation");
         }
 
-        private void Reserialize(Dictionary<Matratt,int> order)
+        private void Reserialize(List<BestallningMatratt> order)
         {
             var serializedValue = JsonConvert.SerializeObject(order);
             HttpContext.Session.SetString("Order", serializedValue);
         }
-        private Dictionary<Matratt,int> Deserialize()
+        private List<BestallningMatratt> Deserialize()
         {
-            Dictionary<Matratt,int> order;
+            List<BestallningMatratt> order;
             if (HttpContext.Session.GetString("Order") == null)
             {
-                order = new Dictionary<Matratt, int>();
+                order = new List<BestallningMatratt>();
             }
             else
             {
                 var str = HttpContext.Session.GetString("Order");
-                order = JsonConvert.DeserializeObject<Dictionary<Matratt,int>>(str);
+                order = JsonConvert.DeserializeObject<List<BestallningMatratt>>(str);
             }
 
             return order;

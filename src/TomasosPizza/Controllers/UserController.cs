@@ -19,6 +19,10 @@ namespace TomasosPizza.Controllers
         [HttpPost]
         public IActionResult LogIn(Kund user)
         {
+            if (ModelState.IsValid)
+            {
+                
+            }
             if (IsValidLogIn(user.AnvandarNamn,user.Losenord))
             {
                 return RedirectToAction("MenuView","Navigation");

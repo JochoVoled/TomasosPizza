@@ -7,21 +7,21 @@
             <p>@product.MatrattNamn</p><p>@product.Pris</p>
             <br />
             <p>@product.Beskrivning</p><br />
-            <a asp-controller="Order" asp-action="AddToOrder" asp-route-matratt="@product">Beställ en</a>
+            <a asp-controller="Order" asp-action="AddToOrder">Beställ en</a> //asp-route-option="@product"
             <br />
         }
     </div>
     <div style="width: 400px;">
-        @foreach (var product in @Model.Order)
+        @foreach (var rad in @Model.Order)
         {
-            <p>@product.Key.MatrattNamn</p><p style="float: right">@product.Value * @product.Key.Pris</p><br />
-            if (@product.Value > 0)
+            <p>@rad.Matratt.MatrattNamn</p><p style="float: right">@rad.Antal * @rad.Matratt.Pris</p><br />
+            if (rad.Antal > 0)
             {
-                <a asp-controller="Order" asp-action="AddToOrder">Beställ en till</a>
-                <a asp-controller="Order" asp-action="RemoveFromOrder">Beställning en färre</a>
+                <a asp-controller="Order" asp-action="AddToOrder"><input type="button" value="Beställ en till"/></a>
+                <a asp-controller="Order" asp-action="RemoveFromOrder"><input type="button" value="Beställ en färre"/></a>
             }
             <br />
         }
     </div>    
 </div>
-<a asp-controller="Navigation" asp-action="OrderView">Lägg beställningen</a>
+<a asp-controller="Navigation" asp-action="OrderView" asp-route-order="@Model.Order"><input type="button" value="Lägg beställningen" /></a>
