@@ -16,9 +16,9 @@ namespace TomasosPizza.Controllers
             _context = context;
         }
 
-        // todo Something here misses what Matratt has been ordered, and sets all values to zero, null or empty. Find what that is and solve it.
-        public IActionResult AddToOrder(Matratt option)
+        public IActionResult AddToOrder(int id)
         {
+            Matratt option = _context.Matratt.First(mat => mat.MatrattId == id);
             List<BestallningMatratt> order = Deserialize();
             BestallningMatratt hasOrdered = order.SingleOrDefault(p => p.MatrattId == option.MatrattId);
             if (hasOrdered!=null)
@@ -41,8 +41,9 @@ namespace TomasosPizza.Controllers
             return RedirectToAction("MenuView", "Navigation");
         }
 
-        public IActionResult RemoveFromOrder(Matratt option)
+        public IActionResult RemoveFromOrder(int id)
         {
+            Matratt option = _context.Matratt.First(mat => mat.MatrattId == id);
             List<BestallningMatratt> order = Deserialize();
             BestallningMatratt remove = order.Find(o => o.MatrattId == option.MatrattId);
             if (remove.Antal<=1)

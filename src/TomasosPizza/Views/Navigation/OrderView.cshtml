@@ -7,19 +7,19 @@
     }
     <p>Att betala: @Model.Totalbelopp</p>
 </div>
-<div class="col-sm-6" style="float:left">
+<div class="col-sm-6" style="float: left">
+    @* todo change form to send updated data to AddAdress, and anchor to CheckOut. Remove order from session and save this as new order string *@
     <form asp-controller="Order" asp-action="CheckOut" asp-route-user="@Model" method="post">
-        
         <label asp-for="@Model.Kund.Gatuadress"></label>
-        <input asp-for="@Model.Kund.Gatuadress" Value="@Model.Kund.Gatuadress" />
-        <br />
+        <input asp-for="@Model.Kund.Gatuadress" value="@Model.Kund.Gatuadress"/>
+        <br/>
         <label asp-for="@Model.Kund.Postnr"></label>
-        <input asp-for="@Model.Kund.Postnr" Value="@Model.Kund.Postnr" />
-        <br />
+        <input asp-for="@Model.Kund.Postnr" value="@Model.Kund.Postnr"/>
+        <br/>
         <label asp-for="@Model.Kund.Postort"></label>
-        <input asp-for="@Model.Kund.Postort" Value="@Model.Kund.Postort" />
-        <br />
-        <a asp-controller="User" asp-action="AddAdress" asp-route-updatedUser="@Model"><input type="button" value="Spara Adress"/></a>
-        <input type="submit" value="Beställ" />
-    </form>    
+        <input asp-for="@Model.Kund.Postort" value="@Model.Kund.Postort"/>
+        <br/>
+        <a asp-controller="User" asp-action="AddAdress" asp-route-id="@Model.Kund.KundId"><input type="button" value="Spara Adress"/></a>
+        <input type="submit" value="Beställ"/>
+    </form>
 </div>

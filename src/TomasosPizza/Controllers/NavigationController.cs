@@ -20,8 +20,8 @@ namespace TomasosPizza.Controllers
 
         public IActionResult MenuView()
         {
-            
             MenuViewModel model = new MenuViewModel();
+            
             foreach (var product in _context.Matratt)
             {
                 model.Menu.Add(product);

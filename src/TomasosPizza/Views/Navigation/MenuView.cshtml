@@ -1,4 +1,5 @@
-﻿@model TomasosPizza.ViewModels.MenuViewModel
+﻿@using TomasosPizza.Models
+@model TomasosPizza.ViewModels.MenuViewModel
 <h1>Welcome to Tomasos Pizza</h1>
 @*<div style="display: block; float: left">*@
     <div class="col-lg-6" style="width: 400px;">
@@ -7,21 +8,26 @@
             <p>@product.MatrattNamn</p><p>@product.Pris</p>
             <br />
             <p>@product.Beskrivning</p><br />
-            <a asp-controller="Order" asp-action="AddToOrder"><input type="button" value="Beställ en"/></a> //asp-route-option="@product"
+            <a asp-controller="Order" asp-action="AddToOrder" asp-route-id="@product.MatrattId"><input type="button" value="Beställ en"/></a> //asp-route-option="@product"
             <br />
         }
     </div>
     <div class="col-lg-6" style="width: 400px;">
         @foreach (var rad in @Model.Order)
         {
-            <p>@rad.Matratt.MatrattNamn</p><p style="float: right">@rad.Antal * @rad.Matratt.Pris</p><br />
+            
+            <p>@rad.Matratt.MatrattNamn</p><p style="float: right">@rad.Antal * @rad.Matratt.Pris</p>
             if (rad.Antal > 0)
             {
-                <a asp-controller="Order" asp-action="AddToOrder"><input type="button" value="Beställ en till"/></a>
-                <a asp-controller="Order" asp-action="RemoveFromOrder"><input type="button" value="Beställ en färre"/></a>
+                <a asp-controller="Order" asp-action="AddToOrder" asp-route-id="@rad.MatrattId"><input type="button" value="+1"/></a>
+                <a asp-controller="Order" asp-action="RemoveFromOrder" asp-route-id="@rad.MatrattId"><input type="button" value="-1"/></a>
             }
             <br />
         }
-        <a asp-controller="Navigation" asp-action="OrderView" asp-route-order="@Model.Order"><input type="button" value="Lägg beställningen" /></a>
+        @if (@Model.Order.Count > 0)
+        {
+            <br />
+            <a asp-controller="Navigation" asp-action="OrderView" asp-route-order="@Model.Order"><input type="button" value="Lägg beställningen" /></a>
+        }
     </div>    
 @*</div>*@

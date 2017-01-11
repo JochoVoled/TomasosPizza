@@ -38,7 +38,7 @@ namespace TomasosPizza.Controllers
 
         private bool IsValidLogIn(string userName, string password)
         {
-            var matchingUserName = _context.Kund.Single(u => u.AnvandarNamn == userName);
+            var matchingUserName = _context.Kund.FirstOrDefault(u => u.AnvandarNamn == userName);
             if (matchingUserName == null) return false;
             if (matchingUserName.Losenord == password) return true;
             return false;
@@ -71,9 +71,14 @@ namespace TomasosPizza.Controllers
             {
                 int userId = int.Parse(HttpContext.Session.GetString("User"));
                 Kund user = _context.Kund.First(u => u.KundId == userId);
-                user.AnvandarNamn = updatedUser.AnvandarNamn;
-                user.Namn = updatedUser.Namn;
-
+                if (user.AnvandarNamn == updatedUser.AnvandarNamn && updatedUser.AnvandarNamn!=null)
+                {
+                    user.AnvandarNamn = updatedUser.AnvandarNamn;
+                }
+                if (user.Namn == updatedUser.Namn && updatedUser.Namn != null)
+                {
+                    user.Namn = updatedUser.Namn;
+                }
                 user.Gatuadress = updatedUser.Gatuadress;
                 user.Postort = updatedUser.Postort;
                 user.Postnr = updatedUser.Postnr;
@@ -104,15 +109,31 @@ namespace TomasosPizza.Controllers
 
         }
 
-        public IActionResult AddAdress(Kund updatedUser)
+        public IActionResult AddAdress(int id)
         {
+            Kund updatedUser = _context.Kund.First(k => k.KundId == id);
             int userId = int.Parse(HttpContext.Session.GetString("User"));
             Kund user = _context.Kund.First(u => u.KundId == userId);
-            user.Gatuadress = updatedUser.Gatuadress;
-            user.Postort = updatedUser.Postort;
-            user.Postnr = updatedUser.Postnr;
-            // todo Get SQL update exception on update without changed values. Add more validation or solve why values are null if not changed
-            _context.SaveChanges();
+            bool anyChanges = false;
+            if (updatedUser.Gatuadress != null && updatedUser.Gatuadress != user.Gatuadress)
+            {
+                user.Gatuadress = updatedUser.Gatuadress;
+                anyChanges = true;
+            }
+            if (updatedUser.Postort != null && updatedUser.Postort != user.Postort)
+            {
+                user.Postort = updatedUser.Postort;
+                anyChanges = true;
+            }
+            if (updatedUser.Postnr != null && updatedUser.Postnr != user.Postnr)
+            {
+                user.Postnr = updatedUser.Postnr;
+                anyChanges = true;
+            }
+            if (anyChanges)
+            {
+                _context.SaveChanges();
+            }
             return RedirectToAction("OrderView", "Navigation",user);
         }
     }
