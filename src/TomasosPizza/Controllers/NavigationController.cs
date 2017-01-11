@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -34,16 +35,35 @@ namespace TomasosPizza.Controllers
             return View(model);
         }
 
-        public IActionResult OrderView(List<BestallningMatratt> order)
+        public IActionResult OrderView()
         {
             // get the order data
-            //var str = HttpContext.Session.GetString("Order");
-            //var order = JsonConvert.DeserializeObject<List<BestallningMatratt>>(str);
+            // List<BestallningMatratt> order
+            Bestallning model = new Bestallning();
+            var str = HttpContext.Session.GetString("Order");
+            var order = JsonConvert.DeserializeObject<List<BestallningMatratt>>(str);
+            model.BestallningMatratt = order;
+            
+            // if no customer is logged in, ask user to log in
+            if (HttpContext.Session.GetString("User") == null) 
+                return RedirectToAction("LogInView", "Navigation");
             
             // get the logged in customer
-            // if no customer is logged in, ask user to log in
-            return View();
+            var id = int.Parse(HttpContext.Session.GetString("User"));
+            var user = _context.Kund.FirstOrDefault(u => u.KundId == id);
+            model.Kund = user;
+            // calculate price in method to make forward-compatible with discounts
+            model.Totalbelopp = CalculatePrice(order, user);
+            model.BestallningDatum = DateTime.Now;
+            model.Levererad = false;
+            return View(model);
         }
+
+        private int CalculatePrice(List<BestallningMatratt> order, Kund user)
+        {
+            return order.Sum(x => x.Matratt.Pris);
+        }
+
         public IActionResult ThankYou()
         {
             return View();

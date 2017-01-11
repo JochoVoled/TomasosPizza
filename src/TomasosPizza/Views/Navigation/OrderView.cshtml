@@ -1,19 +1,25 @@
-﻿@model TomasosPizza.Models.Kund
+﻿@model TomasosPizza.Models.Bestallning
 <div class="col-sm-6" style="float:left">
-    
+    @foreach (var rad in @Model.BestallningMatratt)
+    {
+        <p>@rad.Matratt.MatrattNamn</p><p style="float: right">@rad.Antal</p><br />
+        <br />
+    }
+    <p>Att betala: @Model.Totalbelopp</p>
 </div>
 <div class="col-sm-6" style="float:left">
-    <form asp-controller="Order" asp-action="CheckOut" asp-route="@Model" method="post">
-        <p>@Model.Namn</p>
-        <label asp-for="@Model.Gatuadress"></label>
-        <input asp-for="@Model.Gatuadress" Value="@Model.Gatuadress" />
+    <form asp-controller="Order" asp-action="CheckOut" asp-route-user="@Model" method="post">
+        
+        <label asp-for="@Model.Kund.Gatuadress"></label>
+        <input asp-for="@Model.Kund.Gatuadress" Value="@Model.Kund.Gatuadress" />
         <br />
-        <label asp-for="@Model.Postnr"></label>
-        <input asp-for="@Model.Postnr" Value="@Model.Postnr" />
+        <label asp-for="@Model.Kund.Postnr"></label>
+        <input asp-for="@Model.Kund.Postnr" Value="@Model.Kund.Postnr" />
         <br />
-        <label asp-for="@Model.Postort"></label>
-        <input asp-for="@Model.Postort" Value="@Model.Postort" />
+        <label asp-for="@Model.Kund.Postort"></label>
+        <input asp-for="@Model.Kund.Postort" Value="@Model.Kund.Postort" />
         <br />
-        <input type="button" value="Beställ" />
+        <a asp-controller="User" asp-action="AddAdress" asp-route-updatedUser="@Model"><input type="button" value="Spara Adress"/></a>
+        <input type="submit" value="Beställ" />
     </form>    
 </div>

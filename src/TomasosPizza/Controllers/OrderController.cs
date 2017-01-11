@@ -9,6 +9,14 @@ namespace TomasosPizza.Controllers
 {
     public class OrderController : Controller
     {
+        private TomasosContext _context;
+
+        public OrderController(TomasosContext context)
+        {
+            _context = context;
+        }
+
+        // todo Something here misses what Matratt has been ordered, and sets all values to zero, null or empty. Find what that is and solve it.
         public IActionResult AddToOrder(Matratt option)
         {
             List<BestallningMatratt> order = Deserialize();
@@ -71,10 +79,14 @@ namespace TomasosPizza.Controllers
             return order;
         }
 
-        public IActionResult CheckOut()
+        public IActionResult CheckOut(Bestallning order)
         {
-            var order = Deserialize();
             // todo Add order to Beställning in DB, possibly link in BestallningMatratt
+            _context.Bestallning.Add(order);
+            foreach (var matratt in order.BestallningMatratt)
+            {
+                //_context.BestallningMatratt.Add()
+            }
             return RedirectToAction("ThankYou","Navigation");
         }
     }

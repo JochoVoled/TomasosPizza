@@ -1,17 +1,17 @@
 ﻿@model TomasosPizza.ViewModels.MenuViewModel
 <h1>Welcome to Tomasos Pizza</h1>
-<div style="display: block; float: left">
-    <div style="width: 400px;">
+@*<div style="display: block; float: left">*@
+    <div class="col-lg-6" style="width: 400px;">
         @foreach (var product in @Model.Menu)
         {
             <p>@product.MatrattNamn</p><p>@product.Pris</p>
             <br />
             <p>@product.Beskrivning</p><br />
-            <a asp-controller="Order" asp-action="AddToOrder">Beställ en</a> //asp-route-option="@product"
+            <a asp-controller="Order" asp-action="AddToOrder"><input type="button" value="Beställ en"/></a> //asp-route-option="@product"
             <br />
         }
     </div>
-    <div style="width: 400px;">
+    <div class="col-lg-6" style="width: 400px;">
         @foreach (var rad in @Model.Order)
         {
             <p>@rad.Matratt.MatrattNamn</p><p style="float: right">@rad.Antal * @rad.Matratt.Pris</p><br />
@@ -22,6 +22,6 @@
             }
             <br />
         }
+        <a asp-controller="Navigation" asp-action="OrderView" asp-route-order="@Model.Order"><input type="button" value="Lägg beställningen" /></a>
     </div>    
-</div>
-<a asp-controller="Navigation" asp-action="OrderView" asp-route-order="@Model.Order"><input type="button" value="Lägg beställningen" /></a>
+@*</div>*@

@@ -103,5 +103,17 @@ namespace TomasosPizza.Controllers
             }
 
         }
+
+        public IActionResult AddAdress(Kund updatedUser)
+        {
+            int userId = int.Parse(HttpContext.Session.GetString("User"));
+            Kund user = _context.Kund.First(u => u.KundId == userId);
+            user.Gatuadress = updatedUser.Gatuadress;
+            user.Postort = updatedUser.Postort;
+            user.Postnr = updatedUser.Postnr;
+            // todo Get SQL update exception on update without changed values. Add more validation or solve why values are null if not changed
+            _context.SaveChanges();
+            return RedirectToAction("OrderView", "Navigation",user);
+        }
     }
 }
