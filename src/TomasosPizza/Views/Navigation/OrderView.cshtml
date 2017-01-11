@@ -1,14 +1,19 @@
 ﻿@model TomasosPizza.Models.Kund
-<form asp-controller="Order" asp-action="CheckOut" asp-route="@Model" method="post">
-    <p>@Model.Namn</p>
-    <label asp-for="@Model.Gatuadress"></label>
-    <input asp-for="@Model.Gatuadress" Value="@Model.Gatuadress"/>
-    <br/>
-    <label asp-for="@Model.Postnr"></label>
-    <input asp-for="@Model.Postnr" Value="@Model.Postnr" />
-    <br/>
-    <label asp-for="@Model.Postort"></label>
-    <input asp-for="@Model.Postort" Value="@Model.Postort" />
-    <br/>
-    <input type="button" value="Beställ"/>
-</form>
+<div class="col-sm-6" style="float:left">
+    
+</div>
+<div class="col-sm-6" style="float:left">
+    <form asp-controller="Order" asp-action="CheckOut" asp-route="@Model" method="post">
+        <p>@Model.Namn</p>
+        <label asp-for="@Model.Gatuadress"></label>
+        <input asp-for="@Model.Gatuadress" Value="@Model.Gatuadress" />
+        <br />
+        <label asp-for="@Model.Postnr"></label>
+        <input asp-for="@Model.Postnr" Value="@Model.Postnr" />
+        <br />
+        <label asp-for="@Model.Postort"></label>
+        <input asp-for="@Model.Postort" Value="@Model.Postort" />
+        <br />
+        <input type="button" value="Beställ" />
+    </form>    
+</div>

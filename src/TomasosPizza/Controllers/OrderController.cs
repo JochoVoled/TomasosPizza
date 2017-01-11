@@ -12,19 +12,9 @@ namespace TomasosPizza.Controllers
         public IActionResult AddToOrder(Matratt option)
         {
             List<BestallningMatratt> order = Deserialize();
-            //BestallningMatratt hasOrdered;
-            //try
-            //{
-            //    hasOrdered = order.SingleOrDefault(p => p.MatrattId == option.MatrattId);
-            //}
-            //catch
-            //{
-            //    hasOrdered = order.First(p => p.MatrattId == option.MatrattId);
-            //}
             BestallningMatratt hasOrdered = order.SingleOrDefault(p => p.MatrattId == option.MatrattId);
             if (hasOrdered!=null)
             {
-                //int numOrder = order.First(p => p.MatrattId == hasOrdered.MatrattId).Antal;
                 hasOrdered.Antal += 1;
             }
             else
