@@ -1,6 +1,8 @@
 ﻿@model TomasosPizza.Models.Kund
-
-<form asp-controller="User" asp-action="UpdateUser" asp-route-User="@Model" method="post">
+@{
+    string confirm = "";
+}
+<form asp-controller="User" asp-action="UpdateUser" asp-route-User="@Model" asp-route-confirm="@confirm" method="post">
     <label asp-for="AnvandarNamn">Användarnamn</label>
     <input asp-for="AnvandarNamn" Value="@Model.AnvandarNamn" />
     <br />
@@ -22,8 +24,11 @@
     <label asp-for="Postort">Postort</label>
     <input asp-for="Postort" Value="@Model.Postort"/>
     <br />
-    <label asp-for="Losenord">Lösenord</label>
-    <input asp-for="Losenord" Value="@Model.Losenord" maxlength="30"/>
+    <label asp-for="Losenord">Nytt Lösenord</label>
+    <input asp-for="Losenord" type="password" maxlength="30"/>
+    <br />
+    <label asp-for="@confirm">Bekräfta med Befintligt Lösenord</label>
+    <input asp-for="@confirm" type="password" maxlength="30" />
     <br />
     <input type="submit" value="Uppdatera" />
 </form>

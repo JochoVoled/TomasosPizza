@@ -22,7 +22,8 @@ namespace TomasosPizza.Controllers
             {
                 if (IsValidLogIn(user.AnvandarNamn, user.Losenord))
                 {
-                    HttpContext.Session.SetString("User", user.AnvandarNamn);
+                    var matchingUserId = _context.Kund.Single(u => u.AnvandarNamn == user.AnvandarNamn).KundId;
+                    HttpContext.Session.SetString("User", matchingUserId.ToString());
                     return RedirectToAction("MenuView", "Navigation");
                 }
             }
@@ -31,7 +32,7 @@ namespace TomasosPizza.Controllers
 
         public IActionResult LogOut()
         {
-            HttpContext.Session.SetString("User", "");
+            HttpContext.Session.Remove("User");
             return RedirectToAction("MenuView", "Navigation");
         }
 
@@ -43,36 +44,62 @@ namespace TomasosPizza.Controllers
             return false;
         }
 
-        public IActionResult CreateUser(Kund newUser)
+        public IActionResult CreateUser(Kund newUser, string confirm)
         {
             if (_context.Kund.Any(u => u.AnvandarNamn == newUser.AnvandarNamn))
                 return RedirectToAction("RegisterView", "Navigation");
-            // todo enter further validation here
+            if (newUser.Losenord != confirm)
+            {
+                return RedirectToAction("RegisterView", "Navigation");
+            }
             if (ModelState.IsValid)
             {
-                // todo complete data here
+                //newUser.KundId = _context.Kund.Max(id => id.KundId) + 1;
+                if (newUser.Gatuadress == null) { newUser.Gatuadress = ""; }
+                if (newUser.Postnr == null) { newUser.Postnr = ""; }
+                if (newUser.Postort == null) { newUser.Postort = ""; }
                 _context.Kund.Add(newUser);
                 _context.SaveChanges();
-                HttpContext.Session.SetString("User",newUser.AnvandarNamn);
+                HttpContext.Session.SetString("User",newUser.KundId.ToString());
                 return RedirectToAction("MenuView", "Navigation");
             }
             return RedirectToAction("RegisterView","Navigation");
         }
-        public bool UpdateUser(Kund updatedUser)
+        public IActionResult UpdateUser(Kund updatedUser, string confirm)
         {
-            // todo debug if this truly updates
             try
             {
-                string userName = HttpContext.Session.GetString("User");
-                Kund user = _context.Kund.First(u => u.AnvandarNamn == userName);
-                user = updatedUser;
+                int userId = int.Parse(HttpContext.Session.GetString("User"));
+                Kund user = _context.Kund.First(u => u.KundId == userId);
+                user.AnvandarNamn = updatedUser.AnvandarNamn;
+                user.Namn = updatedUser.Namn;
+
+                user.Gatuadress = updatedUser.Gatuadress;
+                user.Postort = updatedUser.Postort;
+                user.Postnr = updatedUser.Postnr;
+
+                user.Email = updatedUser.Gatuadress;
+                user.Telefon = updatedUser.Telefon;
+
+                if (confirm == user.Losenord)
+                {
+                    user.Losenord = updatedUser.Losenord;
+                }
+                else if (confirm == user.Losenord && confirm!=null)
+                {
+                    // fail user attempt to change password due to invalid password provided
+                    return RedirectToAction("UserEdit", "Navigation");
+                }
+
                 _context.SaveChanges();
-                return true;
+                return RedirectToAction("UserEdit","Navigation");
+                // todo send "success" message
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e);
-                return false;
+                return RedirectToAction("UserEdit", "Navigation");
+                // todo send error message
             }
 
         }

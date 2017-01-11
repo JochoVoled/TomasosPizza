@@ -37,6 +37,9 @@ namespace TomasosPizza.Controllers
         public IActionResult OrderView(List<BestallningMatratt> order)
         {
             // get the order data
+            //var str = HttpContext.Session.GetString("Order");
+            //var order = JsonConvert.DeserializeObject<List<BestallningMatratt>>(str);
+            
             // get the logged in customer
             // if no customer is logged in, ask user to log in
             return View();
@@ -56,8 +59,8 @@ namespace TomasosPizza.Controllers
 
         public IActionResult UserEdit()
         {
-            string userName = HttpContext.Session.GetString("User");
-            Kund user = _context.Kund.First(u => u.AnvandarNamn == userName);
+            int userId = int.Parse(HttpContext.Session.GetString("User"));
+            Kund user = _context.Kund.First(u => u.KundId == userId);
             return View(user);
         }
     }
