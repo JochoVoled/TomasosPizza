@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using TomasosPizza.Models;
 using TomasosPizza.ViewModels;
@@ -21,10 +22,11 @@ namespace TomasosPizza.Controllers
         public IActionResult MenuView()
         {
             MenuViewModel model = new MenuViewModel();
-            
-            foreach (var product in _context.Matratt)
+            model.Menu = _context.Matratt.Include(x => x.MatrattProdukt).ThenInclude(x => x.Produkt).ToList();
+            foreach (var product in model.Menu)
             {
-                model.Menu.Add(product);
+                product.MatrattTypNavigation =
+                _context.MatrattTyp.FirstOrDefault(t => t.MatrattTyp1 == product.MatrattTyp);
             }
             if (HttpContext.Session.GetString("Order") != null)
             {

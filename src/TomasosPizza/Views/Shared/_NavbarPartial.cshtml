@@ -1,0 +1,29 @@
+﻿@using Microsoft.AspNetCore.Http
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a asp-area="" asp-controller="Navigation" asp-action="MenuView" class="navbar-brand">Tomasos Pizza</a>
+
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                @if (Context.Session.GetString("User") == null)
+                {
+                    <li><a asp-area="" asp-controller="Navigation" asp-action="LogInView">Log In</a></li>
+                        <li><a asp-area="" asp-controller="Navigation" asp-action="RegisterView">Join In</a></li>
+                }
+                else
+                {
+                    <li><a asp-area="" asp-controller="User" asp-action="LogOut">Log Out</a></li>
+                        <li><a asp-area="" asp-controller="Navigation" asp-action="UserEdit">Edit Profile</a></li>
+                }
+            </ul>
+        </div>
+    </div>
+</nav>

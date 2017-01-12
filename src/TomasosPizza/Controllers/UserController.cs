@@ -54,7 +54,6 @@ namespace TomasosPizza.Controllers
             }
             if (ModelState.IsValid)
             {
-                //newUser.KundId = _context.Kund.Max(id => id.KundId) + 1;
                 if (newUser.Gatuadress == null) { newUser.Gatuadress = ""; }
                 if (newUser.Postnr == null) { newUser.Postnr = ""; }
                 if (newUser.Postort == null) { newUser.Postort = ""; }
@@ -98,13 +97,13 @@ namespace TomasosPizza.Controllers
 
                 _context.SaveChanges();
                 return RedirectToAction("UserEdit","Navigation");
-                // todo send "success" message
+                // todo (low prio) send "success" message
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 return RedirectToAction("UserEdit", "Navigation");
-                // todo send error message
+                // todo (low prio) send error message
             }
 
         }
