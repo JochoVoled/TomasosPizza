@@ -10,15 +10,57 @@
 <div class="col-sm-6" style="float: left">
     <form asp-controller="User" asp-action="AddAdress" method="post">
         <label>Gatuadress</label>
-        <input name="Gatuadress" value="@Model.Gatuadress"/>
+        <input id="Gatuadress" name="Gatuadress" value="@Model.Gatuadress"/>
         <br/>
         <label>Postnummer</label>
-        <input name="Postnr" value="@Model.Postnr"/>
+        <input id="Postnr" name="Postnr" value="@Model.Postnr"/>
         <br/>
         <label>Postort</label>
-        <input name="Postort" value="@Model.Postort"/>
+        <input id="Postort" name="Postort" value="@Model.Postort"/>
         <br/>
         <input type="submit" value="Spara Adress"/>
-        <a asp-controller="Order" asp-action="CheckOut"><input class="btn-success" type="button" value="Beställ"/></a>
+        <div id="CheckOut">
+            
+        </div>
+        @*todo wishlist: Dynamically enable button when Adress is filled*@
+        @if (Model.Postort != null && Model.Postnr != null && Model.Gatuadress != null)
+        {
+            <a asp-controller="Order" asp-action="CheckOut"><input class="btn-success" type="button" value="Beställ" /></a>
+        }
+        else
+        {
+            <input class="disabled" type="button" value="Beställ" />
+        }
     </form>
 </div>
+
+<script>
+    $.ready(function() {
+        $("#Gatuadress").on("click", function ()
+        {
+            appendCheckOut();
+        });
+        $("#Postnr").on("click", function ()
+        {
+            appendCheckOut();
+        });
+        $("#Postort").on("click", function ()
+        {
+            appendCheckOut();
+        });
+        function adressFilled() {
+            return !($("#Gatuadress").val() == null || $("#Postnr").val() == null || $("#Postort").val() == null);
+        }
+
+        function appendCheckOut() {
+            if (adressFilled())
+            {
+                $("#CheckOut")
+                    .append('<a asp-controller="Order" asp-action="CheckOut"><input class="btn-success" type="button" value="Beställ" /></a>');
+            } else {
+                $("#CheckOut")
+                    .append('<input class="disabled" type="button" value="Beställ" />');
+            }
+        }
+    });
+</script>

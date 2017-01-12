@@ -78,13 +78,26 @@ namespace TomasosPizza.Controllers
                 {
                     user.Namn = updatedUser.Namn;
                 }
-                // todo complete UpdateUser with null and change checks
-                user.Gatuadress = updatedUser.Gatuadress;
-                user.Postort = updatedUser.Postort;
-                user.Postnr = updatedUser.Postnr;
-
-                user.Email = updatedUser.Gatuadress;
-                user.Telefon = updatedUser.Telefon;
+                if (user.Gatuadress == updatedUser.Gatuadress && updatedUser.Gatuadress != null)
+                {
+                    user.Gatuadress = updatedUser.Gatuadress;
+                }
+                if (user.Postort == updatedUser.Postort && updatedUser.Postort != null)
+                {
+                    user.Postort = updatedUser.Postort;
+                }
+                if (user.Postnr == updatedUser.Postnr && updatedUser.Postnr != null)
+                {
+                    user.Postnr = updatedUser.Postnr;
+                }
+                if (user.Email == updatedUser.Email && updatedUser.Email != null)
+                {
+                    user.Email = updatedUser.Email;
+                }
+                if (user.Telefon == updatedUser.Telefon && updatedUser.Telefon != null)
+                {
+                    user.Telefon = updatedUser.Telefon;
+                }
 
                 if (confirm == user.Losenord)
                 {
