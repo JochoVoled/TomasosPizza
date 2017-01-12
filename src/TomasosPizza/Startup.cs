@@ -26,7 +26,7 @@ namespace TomasosPizza
         {
             // Add framework services.
             services.AddMvc();
-            var conn = @"Server=LAPTOP-MD94RGTH;Database=Tomasos;Trusted_Connection=True;"; // todo remember to change server
+            var conn = @"Server=JSHQ;Database=Tomasos;Trusted_Connection=True;"; // todo remember to change server
             services.AddDbContext<TomasosPizza.Models.TomasosContext>(opt => opt.UseSqlServer(conn));
             services.AddSession();
         }

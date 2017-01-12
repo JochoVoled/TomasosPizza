@@ -78,6 +78,7 @@ namespace TomasosPizza.Controllers
                 {
                     user.Namn = updatedUser.Namn;
                 }
+                // todo complete UpdateUser with null and change checks
                 user.Gatuadress = updatedUser.Gatuadress;
                 user.Postort = updatedUser.Postort;
                 user.Postnr = updatedUser.Postnr;

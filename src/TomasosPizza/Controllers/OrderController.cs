@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using TomasosPizza.Models;
 
@@ -84,27 +85,25 @@ namespace TomasosPizza.Controllers
         {
             var serialized = HttpContext.Session.GetString("FinalOrder");
             Bestallning order = JsonConvert.DeserializeObject<Bestallning>(serialized);
-            // todo Add order to Beställning in DB, possibly link in BestallningMatratt
 
             var b = new Bestallning
             {
-                Kund = order.Kund,
+                KundId = order.Kund.KundId,
                 Levererad = true,
                 Totalbelopp = order.Totalbelopp,
                 BestallningDatum = order.BestallningDatum,
             };
             _context.Add(b);
-            //_context.Add(order);
-            //_context.Bestallning.Add(order);
+            
             foreach (var matratt in order.BestallningMatratt)
             {
                 var m = new BestallningMatratt
                 {
                     BestallningId = b.BestallningId,
                     MatrattId = matratt.MatrattId,
+                    // todo solve Antal to account for multiples
                     Antal = matratt.Antal
                 };
-                //_context.BestallningMatratt.Add(m);
                 _context.Add(m);
             }
             _context.SaveChanges();
