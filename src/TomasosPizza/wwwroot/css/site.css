@@ -1,6 +1,15 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
+    background-color: #FF2100;
+}
+
+.tomasos-panel {
+    background-color: FF634C;
+}
+
+.tomasos-text {
+    color: #7F1000;
 }
 
 /* Wrapping element */

@@ -101,7 +101,6 @@ namespace TomasosPizza.Controllers
                 {
                     BestallningId = b.BestallningId,
                     MatrattId = matratt.MatrattId,
-                    // todo solve Antal to account for multiples
                     Antal = matratt.Antal
                 };
                 _context.Add(m);

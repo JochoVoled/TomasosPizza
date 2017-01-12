@@ -39,7 +39,6 @@ namespace TomasosPizza.Controllers
 
         public IActionResult OrderView()
         {
-            // todo Get DbUpdateException at last request/response, due to Kund and Matratt set here. How remove thoese without impacting process?
             // get the order data
             Bestallning model = new Bestallning();
             var str = HttpContext.Session.GetString("Order");

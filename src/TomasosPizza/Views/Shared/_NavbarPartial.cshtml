@@ -15,13 +15,13 @@
             <ul class="nav navbar-nav">
                 @if (Context.Session.GetString("User") == null)
                 {
-                    <li><a asp-area="" asp-controller="Navigation" asp-action="LogInView">Log In</a></li>
-                        <li><a asp-area="" asp-controller="Navigation" asp-action="RegisterView">Join In</a></li>
+                    <li><a asp-area="" asp-controller="Navigation" asp-action="LogInView">Logga in</a></li>
+                        <li><a asp-area="" asp-controller="Navigation" asp-action="RegisterView">Gå med</a></li>
                 }
                 else
                 {
                     <li><a asp-area="" asp-controller="User" asp-action="LogOut">Log Out</a></li>
-                        <li><a asp-area="" asp-controller="Navigation" asp-action="UserEdit">Edit Profile</a></li>
+                        <li><a asp-area="" asp-controller="Navigation" asp-action="UserEdit">Justera profil</a></li>
                 }
             </ul>
         </div>

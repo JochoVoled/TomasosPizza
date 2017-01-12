@@ -7,32 +7,41 @@
     }
     <p>Att betala: @Model.Totalbelopp</p>
 </div>*@
-<div class="col-sm-6" style="float: left">
+<div class="col-lg-3"></div>
+<div class="col-lg-6" style="float: left">
     <form asp-controller="User" asp-action="AddAdress" method="post">
-        <label>Gatuadress</label>
-        <input id="Gatuadress" name="Gatuadress" value="@Model.Gatuadress"/>
-        <br/>
-        <label>Postnummer</label>
-        <input id="Postnr" name="Postnr" value="@Model.Postnr"/>
-        <br/>
-        <label>Postort</label>
-        <input id="Postort" name="Postort" value="@Model.Postort"/>
-        <br/>
-        <input type="submit" value="Spara Adress"/>
-        <div id="CheckOut">
-            
-        </div>
-        @*todo wishlist: Dynamically enable button when Adress is filled*@
-        @if (Model.Postort != null && Model.Postnr != null && Model.Gatuadress != null)
-        {
-            <a asp-controller="Order" asp-action="CheckOut"><input class="btn-success" type="button" value="Beställ" /></a>
-        }
-        else
-        {
-            <input class="disabled" type="button" value="Beställ" />
-        }
+        <table>
+            <tr>
+                <td><label>Gatuadress</label></td>
+                <td><input id="Gatuadress" name="Gatuadress" value="@Model.Gatuadress" /></td>
+            </tr>
+            <tr>
+                <td><label>Postnummer</label></td>
+                <td><input id="Postnr" name="Postnr" value="@Model.Postnr" /></td>
+            </tr>
+            <tr>
+                <td><label>Postort</label></td>
+                <td><input id="Postort" name="Postort" value="@Model.Postort" /></td>
+            </tr>
+            <tr>
+                <td><input type="submit" value="Spara Adress" /></td>
+                <td>
+                    @*todo wishlist: Dynamically enable button when Adress is filled*@
+                    <div id="CheckOut"></div>
+                    @if (Model.Postort != null && Model.Postnr != null && Model.Gatuadress != null)
+                    {
+                        <a asp-controller="Order" asp-action="CheckOut"><input class="btn-success" type="button" value="Beställ"/></a>
+                    }
+                    else
+                    {
+                        <input class="disabled" type="button" value="Beställ"/>
+                    }
+                </td>
+            </tr>
+        </table>
     </form>
 </div>
+<div class="col-lg-3"></div>
 
 <script>
     $.ready(function() {

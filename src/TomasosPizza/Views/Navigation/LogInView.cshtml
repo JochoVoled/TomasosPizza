@@ -1,10 +1,20 @@
 ﻿@model TomasosPizza.Models.Kund
-<form asp-controller="User" asp-action="LogIn" asp-route-User="@Model" method="post">
-    <label asp-for="AnvandarNamn">Användarnamn</label>
-    <input type="text" asp-for="AnvandarNamn" required/>
-    <br />
-    <label asp-for="Losenord">Lösenord</label>
-    <input type="password" asp-for="Losenord" maxlength="30" required />
-    <br />
-    <input type="submit" Value="Logga in"/>
-</form>
+<div class="col-lg-3"></div>
+<div class="col-lg-6 tomasos-panel">
+    <form asp-controller="User" asp-action="LogIn" asp-route-User="@Model" method="post">
+        <table>
+            <tr>
+                <td><label asp-for="AnvandarNamn">Användarnamn</label></td>
+                <td><input type="text" asp-for="AnvandarNamn" required /></td>
+            </tr>
+            <tr>
+                <td><label asp-for="Losenord">Lösenord</label></td>
+                <td><input type="password" asp-for="Losenord" maxlength="30" required /></td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="submit" Value="Logga in" /></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div class="col-lg-3"></div>

@@ -3,42 +3,72 @@
 
 @{
     string ingredients = "";
+    int antal;
 }
 
-<h1>Welcome to Tomasos Pizza</h1>
 <div style="width: 100%">
-    <div class="col-lg-6">
+    <div class="col-lg-6 tomasos-panel">
+        <h1>På menyn</h1>
         @foreach (var product in @Model.Menu)
         {
-            <p>@product.MatrattNamn (@product.MatrattTypNavigation.Beskrivning)<span style="float: right">@product.Pris :-</span></p>
-            <p class="i">@product.Beskrivning</p>
-            ingredients = "";
-            foreach (var ingredient in product.MatrattProdukt)
-            {
-                ingredients += ingredient.Produkt.ProduktNamn + " ";
-            }
-            <p>Innehåller @ingredients</p>
-            <a asp-controller="Order" asp-action="AddToOrder" asp-route-id="@product.MatrattId"><input class="btn-success" type="button" value="Beställ en" /></a> //asp-route-option="@product"
+            <table class="table-responsive" style="width: 100%">
+                <tr>
+                    <td>
+                        <p>@product.MatrattNamn (@product.MatrattTypNavigation.Beskrivning)</p>
+                    </td>
+                    <td>
+                        <p style="float: right">@product.Pris :-</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>@product.Beskrivning</p>
+                        @{
+                            ingredients = "";
+                            foreach (var ingredient in product.MatrattProdukt)
+                            {
+                                ingredients += ingredient.Produkt.ProduktNamn + " ";
+                            }
+                        }
+                        <p>Innehåller @ingredients</p>
+                    </td>
+                    <td>
+                        <span style="float: right"><a asp-controller="Order" asp-action="AddToOrder" asp-route-id="@product.MatrattId"><input type="button" value="Beställ en"/></a></span>
+                    </td>
+                </tr>
+            </table>
+            <br/>
         }
     </div>
-    <div class="col-lg-6">
-        @foreach (var rad in @Model.Order)
-        {
-
-            @rad.Matratt.MatrattNamn
-            if (rad.Antal > 0)
+    <div class="col-lg-6 tomasos-panel">
+        <h1>Din beställning</h1>
+        <table class="table-responsive" style="width: 100%">
+            @foreach (var rad in @Model.Order)
             {
-                <span style="float: right"><a asp-controller="Order" asp-action="AddToOrder" asp-route-id="@rad.MatrattId"><input class="btn-success" type="button" value="+1" /></a></span>
-                <span style="float: right"><a asp-controller="Order" asp-action="RemoveFromOrder" asp-route-id="@rad.MatrattId"><input class="btn-danger" type="button" value="-1" /></a></span>
+
+                <tr>
+                    <td>
+                        @rad.Matratt.MatrattNamn
+                    </td>
+                    <td>
+                        <span style="float: right">@rad.Antal * @rad.Matratt.Pris :-</span>
+                    </td>
+                    <td>
+                        <span style="float: right"><a asp-controller="Order" asp-action="RemoveFromOrder" asp-route-id="@rad.MatrattId"><input type="button" value="Ta bort en"/></a></span>
+                    </td>
+                </tr>
             }
-            <span style="float: right">@rad.Antal * @rad.Matratt.Pris :-</span>
-            <br />
-        }
+        </table>
+        <br/>
         @if (@Model.Order.Count > 0)
         {
-            <br />
-            <p>Pris: @Model.Order.Sum(p => (p.Matratt.Pris*p.Antal)) :-</p><br/>
-            <a asp-controller="Navigation" asp-action="OrderView" asp-route-order="@Model.Order"><input type="button" value="Lägg beställningen" /></a>
+            <br/>
+            <p>Pris: @Model.Order.Sum(p => p.Matratt.Pris * p.Antal); :-</p>
+            <span style="float: right"><a asp-controller="Navigation" asp-action="OrderView" asp-route-order="@Model.Order"><input class="btn-success" type="button" value="Lägg beställningen"/></a></span>
+        }
+        else
+        {
+            <p>Din beställning är tom. Beställ något från menyn för att fylla på din beställning.</p>
         }
     </div>
 </div>
