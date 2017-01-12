@@ -32,7 +32,7 @@ namespace TomasosPizza.Controllers
 
         public IActionResult LogOut()
         {
-            HttpContext.Session.Remove("User");
+            HttpContext.Session.Clear();
             return RedirectToAction("MenuView", "Navigation");
         }
 
@@ -107,10 +107,10 @@ namespace TomasosPizza.Controllers
             }
 
         }
-
-        public IActionResult AddAdress(int id)
+        [HttpPost]
+        public IActionResult AddAdress(Kund updatedUser)
         {
-            Kund updatedUser = _context.Kund.First(k => k.KundId == id);
+            //Kund updatedUser = bestallning.Kund;
             int userId = int.Parse(HttpContext.Session.GetString("User"));
             Kund user = _context.Kund.First(u => u.KundId == userId);
             bool anyChanges = false;

@@ -80,14 +80,34 @@ namespace TomasosPizza.Controllers
             return order;
         }
 
-        public IActionResult CheckOut(Bestallning order)
+        public IActionResult CheckOut()
         {
+            var serialized = HttpContext.Session.GetString("FinalOrder");
+            Bestallning order = JsonConvert.DeserializeObject<Bestallning>(serialized);
             // todo Add order to Beställning in DB, possibly link in BestallningMatratt
-            _context.Bestallning.Add(order);
+
+            var b = new Bestallning
+            {
+                Kund = order.Kund,
+                Levererad = true,
+                Totalbelopp = order.Totalbelopp,
+                BestallningDatum = order.BestallningDatum,
+            };
+            _context.Add(b);
+            //_context.Add(order);
+            //_context.Bestallning.Add(order);
             foreach (var matratt in order.BestallningMatratt)
             {
-                //_context.BestallningMatratt.Add()
+                var m = new BestallningMatratt
+                {
+                    BestallningId = b.BestallningId,
+                    MatrattId = matratt.MatrattId,
+                    Antal = matratt.Antal
+                };
+                //_context.BestallningMatratt.Add(m);
+                _context.Add(m);
             }
+            _context.SaveChanges();
             return RedirectToAction("ThankYou","Navigation");
         }
     }

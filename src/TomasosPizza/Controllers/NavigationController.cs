@@ -39,8 +39,8 @@ namespace TomasosPizza.Controllers
 
         public IActionResult OrderView()
         {
+            // todo Get DbUpdateException at last request/response, due to Kund and Matratt set here. How remove thoese without impacting process?
             // get the order data
-            // List<BestallningMatratt> order
             Bestallning model = new Bestallning();
             var str = HttpContext.Session.GetString("Order");
             var order = JsonConvert.DeserializeObject<List<BestallningMatratt>>(str);
@@ -58,7 +58,12 @@ namespace TomasosPizza.Controllers
             model.Totalbelopp = CalculatePrice(order, user);
             model.BestallningDatum = DateTime.Now;
             model.Levererad = false;
-            return View(model);
+
+            // Save to Session, so it can be loaded at CheckOut.
+            var tmp = JsonConvert.SerializeObject(model);
+            HttpContext.Session.SetString("FinalOrder",tmp);
+
+            return View(user);
         }
 
         private int CalculatePrice(List<BestallningMatratt> order, Kund user)

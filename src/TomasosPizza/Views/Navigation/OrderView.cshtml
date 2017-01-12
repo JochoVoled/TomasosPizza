@@ -1,25 +1,24 @@
-﻿@model TomasosPizza.Models.Bestallning
-<div class="col-sm-6" style="float:left">
+﻿@model TomasosPizza.Models.Kund
+@*<div class="col-sm-6" style="float:left">
     @foreach (var rad in @Model.BestallningMatratt)
     {
         <p>@rad.Matratt.MatrattNamn</p><p style="float: right">@rad.Antal</p><br />
         <br />
     }
     <p>Att betala: @Model.Totalbelopp</p>
-</div>
+</div>*@
 <div class="col-sm-6" style="float: left">
-    @* todo change form to send updated data to AddAdress, and anchor to CheckOut. Remove order from session and save this as new order string *@
-    <form asp-controller="Order" asp-action="CheckOut" asp-route-user="@Model" method="post">
-        <label asp-for="@Model.Kund.Gatuadress"></label>
-        <input asp-for="@Model.Kund.Gatuadress" value="@Model.Kund.Gatuadress"/>
+    <form asp-controller="User" asp-action="AddAdress" method="post">
+        <label>Gatuadress</label>
+        <input name="Gatuadress" value="@Model.Gatuadress"/>
         <br/>
-        <label asp-for="@Model.Kund.Postnr"></label>
-        <input asp-for="@Model.Kund.Postnr" value="@Model.Kund.Postnr"/>
+        <label>Postnummer</label>
+        <input name="Postnr" value="@Model.Postnr"/>
         <br/>
-        <label asp-for="@Model.Kund.Postort"></label>
-        <input asp-for="@Model.Kund.Postort" value="@Model.Kund.Postort"/>
+        <label>Postort</label>
+        <input name="Postort" value="@Model.Postort"/>
         <br/>
-        <a asp-controller="User" asp-action="AddAdress" asp-route-id="@Model.Kund.KundId"><input type="button" value="Spara Adress"/></a>
-        <input type="submit" value="Beställ"/>
+        <input type="submit" value="Spara Adress"/>
+        <a asp-controller="Order" asp-action="CheckOut"><input class="btn-success" type="button" value="Beställ"/></a>
     </form>
 </div>
