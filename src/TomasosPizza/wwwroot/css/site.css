@@ -1,15 +1,41 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
-    background-color: #FF2100;
+    background-color: #FF4337;
 }
 
 .tomasos-panel {
-    background-color: #FF634C;
+    background-color: #FFF; /*#FF8B84;*/
+    padding: 10px;
+    border-top-right-radius: 20px;
+    border-bottom-left-radius: 20px;
 }
 
 .tomasos-text {
-    color: #7F1000;
+    font-family: sans-serif;
+    color: #7F211C;
+    font-weight: bold;
+}
+
+p.align-right ,span.align-right {
+    float: right;
+}
+
+label {
+    padding-right: 10px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+.navbar {
+    border-bottom: 3px solid;
+    border-color: #7f211c;
+    background-color: #ffffff;
+}
+navbar-brand {
+    color: #7f211c;
+}
+.navbar-collapse a {
+    color: #ff4337;
 }
 
 /* Wrapping element */

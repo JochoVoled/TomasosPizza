@@ -2,33 +2,50 @@
 @{
     string confirm = "";
 }
-<form asp-controller="User" asp-action="UpdateUser" asp-route-User="@Model" asp-route-confirm="@confirm" method="post">
-    <label asp-for="AnvandarNamn">Användarnamn</label>
-    <input asp-for="AnvandarNamn" Value="@Model.AnvandarNamn" />
-    <br />
-    <label asp-for="Namn">Namn</label>
-    <input asp-for="Namn" Value="@Model.Namn" pattern="^[a-zåäöA-ZÖÅÖ\s]+$" />
-    <br />
-    <label asp-for="Email">E-mail</label>
-    <input asp-for="AnvandarNamn" Value="@Model.Email"/>
-    <br />
-    <label asp-for="Telefon">Telefon</label>
-    <input asp-for="Telefon" Value="@Model.Telefon" pattern="^\d+$"/>
-    <br />
-    <label asp-for="Gatuadress">Adress</label>
-    <input asp-for="Gatuadress" Value="@Model.Gatuadress"/>
-    <br />
-    <label asp-for="Postnr">Postnummer</label>
-    <input asp-for="Postnr" Value="@Model.Postnr" pattern="^\d{5}$"/>
-    <br />
-    <label asp-for="Postort">Postort</label>
-    <input asp-for="Postort" Value="@Model.Postort"/>
-    <br />
-    <label asp-for="Losenord">Nytt Lösenord</label>
-    <input asp-for="Losenord" type="password" maxlength="30"/>
-    <br />
-    <label asp-for="@confirm">Bekräfta med Befintligt Lösenord</label>
-    <input asp-for="@confirm" type="password" maxlength="30" />
-    <br />
-    <input type="submit" value="Uppdatera" />
-</form>
+<div class="col-lg-6">
+    <div class="tomasos-panel">
+        <form asp-controller="User" asp-action="UpdateUser" asp-route-User="@Model" asp-route-confirm="@confirm" method="post">
+            <table>
+                <tr>
+                    <td><label asp-for="AnvandarNamn">Användarnamn</label></td>
+                    <td><input asp-for="AnvandarNamn" Value="@Model.AnvandarNamn" /></td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Namn">Namn</label></td>
+                    <td><input asp-for="Namn" Value="@Model.Namn" pattern="^[a-zåäöA-ZÖÅÖ\s]+$" /></td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Email">E-mail</label></td>
+                    <td><input asp-for="AnvandarNamn" Value="@Model.Email" /></td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Telefon">Telefon</label></td>
+                    <td><input asp-for="Telefon" Value="@Model.Telefon" pattern="^\d+$" /></td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Gatuadress">Adress</label></td>
+                    <td><input asp-for="Gatuadress" Value="@Model.Gatuadress" /></td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Postnr">Postnummer</label></td>
+                    <td><input asp-for="Postnr" Value="@Model.Postnr" pattern="^\d{5}$" /></td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Postort">Postort</label></td>
+                    <td><input asp-for="Postort" Value="@Model.Postort" /></td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Losenord">Nytt Lösenord</label></td>
+                    <td><input asp-for="Losenord" type="password" maxlength="30" /></td>
+                </tr>
+                <tr>
+                    <td><label asp-for="@confirm">Bekräfta med Befintligt Lösenord</label></td>    
+                    <td><input asp-for="@confirm" type="password" maxlength="30" /></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="submit" value="Uppdatera" /></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
