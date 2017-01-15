@@ -127,27 +127,24 @@ namespace TomasosPizza.Controllers
             //Kund updatedUser = bestallning.Kund;
             int userId = int.Parse(HttpContext.Session.GetString("User"));
             Kund user = _context.Kund.First(u => u.KundId == userId);
-            bool anyChanges = false;
-            if (updatedUser.Gatuadress != null && updatedUser.Gatuadress != user.Gatuadress)
+
+            // only save to database if all required fields have actual values
+            if (string.IsNullOrWhiteSpace(updatedUser.Gatuadress) || string.IsNullOrWhiteSpace(updatedUser.Postort) || string.IsNullOrWhiteSpace(updatedUser.Postnr))
+            {
+                return RedirectToAction("OrderView", "Navigation", user);
+            }
+
+            // only update if any value has been changed
+            if (updatedUser.Gatuadress != user.Gatuadress || updatedUser.Postort != user.Postort || updatedUser.Postnr != user.Postnr)
             {
                 user.Gatuadress = updatedUser.Gatuadress;
-                anyChanges = true;
-            }
-            if (updatedUser.Postort != null && updatedUser.Postort != user.Postort)
-            {
                 user.Postort = updatedUser.Postort;
-                anyChanges = true;
-            }
-            if (updatedUser.Postnr != null && updatedUser.Postnr != user.Postnr)
-            {
                 user.Postnr = updatedUser.Postnr;
-                anyChanges = true;
-            }
-            if (anyChanges)
-            {
                 _context.SaveChanges();
             }
-            return RedirectToAction("OrderView", "Navigation",user);
+            
+            //return RedirectToAction("OrderView", "Navigation",user);
+            return RedirectToAction("CheckOut","Order",false); // I know CheckOut takes two parameters, so this shouldn't work, yet IDE sais it would? Pay attention, and learn something
         }
     }
 }

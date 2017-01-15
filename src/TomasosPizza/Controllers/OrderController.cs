@@ -81,8 +81,32 @@ namespace TomasosPizza.Controllers
             return order;
         }
 
-        public IActionResult CheckOut()
+        public IActionResult CheckOut(Kund updatedUser)
         {
+            int userId = int.Parse(HttpContext.Session.GetString("User"));
+            Kund user = _context.Kund.First(u => u.KundId == userId);
+
+            
+            // only save to database if all required fields have actual values
+            if (string.IsNullOrWhiteSpace(updatedUser.Gatuadress) || string.IsNullOrWhiteSpace(updatedUser.Postort) || string.IsNullOrWhiteSpace(updatedUser.Postnr))
+            {
+                RedirectToAction("OrderView", "Navigation");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("OrderView", "Navigation");
+            }
+
+            // only update if any value has been changed
+            if (updatedUser.Gatuadress != user.Gatuadress || updatedUser.Postort != user.Postort || updatedUser.Postnr != user.Postnr)
+            {
+                user.Gatuadress = updatedUser.Gatuadress;
+                user.Postort = updatedUser.Postort;
+                user.Postnr = updatedUser.Postnr;
+                _context.SaveChanges();
+            }
+
             var serialized = HttpContext.Session.GetString("FinalOrder");
             Bestallning order = JsonConvert.DeserializeObject<Bestallning>(serialized);
 
@@ -94,7 +118,7 @@ namespace TomasosPizza.Controllers
                 BestallningDatum = order.BestallningDatum,
             };
             _context.Add(b);
-            
+
             foreach (var matratt in order.BestallningMatratt)
             {
                 var m = new BestallningMatratt
@@ -106,7 +130,7 @@ namespace TomasosPizza.Controllers
                 _context.Add(m);
             }
             _context.SaveChanges();
-            return RedirectToAction("ThankYou","Navigation");
+            return RedirectToAction("ThankYou", "Navigation");
         }
     }
 }

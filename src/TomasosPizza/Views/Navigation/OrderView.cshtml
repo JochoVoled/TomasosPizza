@@ -1,43 +1,52 @@
 ﻿@model TomasosPizza.Models.Kund
-@*<div class="col-sm-6" style="float:left">
-    @foreach (var rad in @Model.BestallningMatratt)
-    {
-        <p>@rad.Matratt.MatrattNamn</p><p style="float: right">@rad.Antal</p><br />
-        <br />
-    }
-    <p>Att betala: @Model.Totalbelopp</p>
-</div>*@
+
+@*@{
+    bool SaveAdress;
+}*@
+
 <div class="col-lg-3"></div>
 <div class="col-lg-6">
     <div class="tomasos-panel">
-        <form asp-controller="User" asp-action="AddAdress" method="post">
+        @*todo Ändra "spara data" till checkbox, i steg:
+            Byt form action tillbaka till CheckOut()
+            Lägg till en checkbox som heter "Spara som min adress"
+            Skicka med värdet i checkboxen som boolvärde till CheckOut()
+            I CheckOut(), om SparaSomAdress, länka in AddAdress()
+            ändra returtypen i AddAdress till void *@
+        @*<form asp-controller="User" asp-action="AddAdress" method="post">*@
+        <form asp-controller="Order" asp-action="CheckOut" asp-route-user="@Model" method="post"> @* asp-route-saveAdress="@SaveAdress" *@
             <table>
                 <tr>
                     <td><label>Gatuadress</label></td>
-                    <td><input id="Gatuadress" name="Gatuadress" value="@Model.Gatuadress" /></td>
+                    <td><input id="Gatuadress" name="Gatuadress" maxlength="50" value="@Model.Gatuadress" required /></td>
+                    <td><span asp-validation-for="Gatuadress"></span></td>
                 </tr>
                 <tr>
                     <td><label>Postnummer</label></td>
-                    <td><input id="Postnr" name="Postnr" value="@Model.Postnr" /></td>
+                    <td><input id="Postnr" name="Postnr" pattern="^\d{5}$" value="@Model.Postnr" required /></td>
+                    <td><span asp-validation-for="Postnr"></span></td>
                 </tr>
                 <tr>
                     <td><label>Postort</label></td>
-                    <td><input id="Postort" name="Postort" value="@Model.Postort" /></td>
+                    <td><input id="Postort" name="Postort" maxlength="100" value="@Model.Postort" required /></td>
+                    <td><span asp-validation-for="Postort"></span></td>
                 </tr>
+                @*<tr>
+                    <td colspan="2"><input type="checkbox" value="true" asp-for="@SaveAdress" />Spara som min adress</td>
+                </tr>*@
                 <tr>
-                    <td><input type="submit" value="Spara Adress" /></td>
-                    <td>
-                        @*todo wishlist: Dynamically enable button when Adress is filled*@
+                    <td colspan="3"><input type="submit" value="Beställ" /></td>
+                    @*<td>
                         <div id="CheckOut"></div>
                         @if (Model.Postort != null && Model.Postnr != null && Model.Gatuadress != null)
                         {
-                            <a asp-controller="Order" asp-action="CheckOut"><input class="btn-success" type="button" value="Beställ" /></a>
+                            <a asp-controller="Order" asp-action="CheckOut"><input class="btn" type="button" value="Beställ" /></a>
                         }
                         else
                         {
                             <input class="disabled" type="button" value="Beställ" />
                         }
-                    </td>
+                    </td>*@
                 </tr>
             </table>
         </form>
@@ -45,33 +54,40 @@
 </div>
 <div class="col-lg-3"></div>
 
-<script>
+@*<script>
     $.ready(function() {
-        $("#Gatuadress").on("click", function ()
+        $("#Gatuadress").blur(function ()
         {
             appendCheckOut();
         });
-        $("#Postnr").on("click", function ()
+        $("#Postnr").blur(function ()
         {
             appendCheckOut();
         });
-        $("#Postort").on("click", function ()
+        $("#Postort").blur(function ()
         {
             appendCheckOut();
         });
         function adressFilled() {
-            return !($("#Gatuadress").val() == null || $("#Postnr").val() == null || $("#Postort").val() == null);
+            var isFilled = !($("#Gatuadress")
+                .val() ==
+                null ||
+                $("#Postnr").val() == null ||
+                $("#Postort").val() == null);
+            console.log("isFilled is "+isFilled);
+            return isFilled;
         }
 
         function appendCheckOut() {
+            console.log("Blur triggered");
             if (adressFilled())
             {
-                $("#CheckOut")
-                    .append('<a asp-controller="Order" asp-action="CheckOut"><input class="btn-success" type="button" value="Beställ" /></a>');
-            } else {
-                $("#CheckOut")
-                    .append('<input class="disabled" type="button" value="Beställ" />');
+                console.log("Adress is filled");
+                $("#CheckOut").append('<a asp-controller="Order" asp-action="CheckOut"><input class="btn-success" type="button" value="Beställ" /></a>');
+            } else
+            {
+                $("#CheckOut").append('<input class="disabled" type="button" value="Beställ" />');
             }
         }
     });
-</script>
+</script>*@
