@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using TomasosPizza.IdentityModels;
+using TomasosPizza.Models;
 
 namespace TomasosPizza
 {
@@ -26,8 +29,14 @@ namespace TomasosPizza
         {
             // Add framework services.
             services.AddMvc();
-            var conn = @"Server=JSHQ;Database=Tomasos;Trusted_Connection=True;"; // todo remember to change server
-            services.AddDbContext<TomasosPizza.Models.TomasosContext>(opt => opt.UseSqlServer(conn));
+            //var conn = @"Server=JSHQ;Database=Tomasos;Trusted_Connection=True;"; 
+            services.AddDbContext<TomasosContext>(
+                opt => opt.UseSqlServer(Configuration.GetConnectionString("TomasosConnection")));
+            services.AddDbContext<IdentityContext>(
+                opt => opt.UseSqlServer(Configuration.GetConnectionString("IdentityConnection")));
+            services.AddIdentity<IdentityKund, IdentityRole>()
+                .AddEntityFrameworkStores<IdentityContext>()
+                .AddDefaultTokenProviders();
             services.AddSession();
         }
 
@@ -48,12 +57,13 @@ namespace TomasosPizza
             }
             app.UseSession();
             app.UseStaticFiles();
+            app.UseIdentity();
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Navigation}/{action=MenuView}/{id?}");
+                    template: "{controller=Navigation}/{action=LogInView}/{id?}");
             });
         }
     }

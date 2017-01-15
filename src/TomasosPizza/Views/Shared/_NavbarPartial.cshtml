@@ -1,4 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Identity
+@using TomasosPizza.IdentityModels
+
+@inject SignInManager<IdentityKund> SignInManager;
+@inject UserManager<IdentityKund> UserManager;
+
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
@@ -13,15 +19,20 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                @if (Context.Session.GetString("User") == null)
+                @*@if (Context.Session.GetString("User") == null)*@
+                @if (SignInManager.IsSignedIn(User))
                 {
-                    <li><a asp-area="" asp-controller="Navigation" asp-action="LogInView">Logga in</a></li>
-                        <li><a asp-area="" asp-controller="Navigation" asp-action="RegisterView">Gå med</a></li>
+                    <li><a asp-area="" asp-controller="User" asp-action="LogOut">Log Out</a></li>
+                    <li><a asp-area="" asp-controller="Navigation" asp-action="UserEdit">Justera profil</a></li>
+                    if (User.IsInRole("Administrator"))
+                    {
+                        <li><a asp-area="" asp-controller="Navigation" asp-action="AdminView">Kontrollpanel</a></li>
+                    }
                 }
                 else
                 {
-                    <li><a asp-area="" asp-controller="User" asp-action="LogOut">Log Out</a></li>
-                        <li><a asp-area="" asp-controller="Navigation" asp-action="UserEdit">Justera profil</a></li>
+                    <li><a asp-area="" asp-controller="Navigation" asp-action="LogInView">Logga in</a></li>
+                    <li><a asp-area="" asp-controller="Navigation" asp-action="RegisterView">Gå med</a></li>
                 }
             </ul>
         </div>

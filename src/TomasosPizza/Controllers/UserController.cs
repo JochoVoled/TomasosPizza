@@ -1,18 +1,27 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using TomasosPizza.IdentityModels;
 using TomasosPizza.Models;
 
 namespace TomasosPizza.Controllers
 {
+    [AllowAnonymous]
     public class UserController : Controller
     {
         private TomasosContext _context;
+        private readonly UserManager<IdentityKund> _userManager;
+        private readonly SignInManager<IdentityKund> _signInManager;
 
-        public UserController(TomasosContext context)
+        public UserController(TomasosContext context, UserManager<IdentityKund> userManager, SignInManager<IdentityKund> signInManager)
         {
             _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         [HttpPost]
@@ -30,9 +39,29 @@ namespace TomasosPizza.Controllers
             return RedirectToAction("LogInView","Navigation");
         }
 
+        // todo sync Kund and IdentityKund, so that current users can log in
+        [HttpPost]
+        public async Task<IActionResult> LogInAsync(Kund user)
+        {
+            var result = await _signInManager.PasswordSignInAsync(user.AnvandarNamn, user.Losenord, false, false);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("MenuView", "Navigation");
+            }
+            return RedirectToAction("LogInView", "Navigation");
+        }
+
+        [Authorize]
         public IActionResult LogOut()
         {
             HttpContext.Session.Clear();
+            return RedirectToAction("MenuView", "Navigation");
+        }
+
+        [Authorize]
+        public async Task<IActionResult> LogOutAsync()
+        {
+            await _signInManager.SignOutAsync();
             return RedirectToAction("MenuView", "Navigation");
         }
 
@@ -64,6 +93,39 @@ namespace TomasosPizza.Controllers
             }
             return RedirectToAction("RegisterView","Navigation");
         }
+
+        public async Task<IActionResult> CreateUserAsync(Kund user,string confirm)
+        {
+            if (_context.Kund.Any(u => u.AnvandarNamn == user.AnvandarNamn))
+                return RedirectToAction("LogInView", "Navigation");
+            if (user.Losenord != confirm)
+                return RedirectToAction("LogInView", "Navigation");
+            if (user.Gatuadress == null)
+                user.Gatuadress = "";
+            if (user.Postnr == null)
+                user.Postnr = "";
+            if (user.Postort == null)
+                user.Postort = "";
+
+            var userIdentity = new IdentityKund
+            {
+                UserName = user.AnvandarNamn,
+                PasswordHash = user.Losenord,
+                Email = user.Email,
+                PhoneNumber = user.Telefon,
+            };
+            var result = await _userManager.CreateAsync(userIdentity, user.Losenord); //todo testa: Vet ej om Kund och IdentityKund kommer lira så här enkelt
+            if (result.Succeeded)
+            {
+                _context.Kund.Add(user);
+                _context.SaveChanges();
+                await _signInManager.SignInAsync(userIdentity, false);
+                return RedirectToAction("MenuView", "Navigation");
+            }
+            return RedirectToAction("LogInView", "Navigation");
+        }
+
+        [Authorize]
         public IActionResult UpdateUser(Kund updatedUser, string confirm)
         {
             try
@@ -121,7 +183,9 @@ namespace TomasosPizza.Controllers
             }
 
         }
+
         [HttpPost]
+        [Authorize]
         public IActionResult AddAdress(Kund updatedUser)
         {
             //Kund updatedUser = bestallning.Kund;
@@ -145,6 +209,16 @@ namespace TomasosPizza.Controllers
             
             //return RedirectToAction("OrderView", "Navigation",user);
             return RedirectToAction("CheckOut","Order",false); // I know CheckOut takes two parameters, so this shouldn't work, yet IDE sais it would? Pay attention, and learn something
+        }
+
+        public async void PromoteUser(IdentityKund user)
+        {
+            await _userManager.AddToRoleAsync(user, "PremiumUser");
+        }
+
+        public async void Demote(IdentityKund user)
+        {
+            await _userManager.RemoveFromRoleAsync(user, "PremiumUser");
         }
     }
 }

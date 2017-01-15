@@ -1,20 +1,9 @@
 ﻿@model TomasosPizza.Models.Kund
 
-@*@{
-    bool SaveAdress;
-}*@
-
 <div class="col-lg-3"></div>
 <div class="col-lg-6">
     <div class="tomasos-panel">
-        @*todo Ändra "spara data" till checkbox, i steg:
-            Byt form action tillbaka till CheckOut()
-            Lägg till en checkbox som heter "Spara som min adress"
-            Skicka med värdet i checkboxen som boolvärde till CheckOut()
-            I CheckOut(), om SparaSomAdress, länka in AddAdress()
-            ändra returtypen i AddAdress till void *@
-        @*<form asp-controller="User" asp-action="AddAdress" method="post">*@
-        <form asp-controller="Order" asp-action="CheckOut" asp-route-user="@Model" method="post"> @* asp-route-saveAdress="@SaveAdress" *@
+        <form asp-controller="Order" asp-action="CheckOut" asp-route-user="@Model" method="post">
             <table>
                 <tr>
                     <td><label>Gatuadress</label></td>
@@ -31,63 +20,11 @@
                     <td><input id="Postort" name="Postort" maxlength="100" value="@Model.Postort" required /></td>
                     <td><span asp-validation-for="Postort"></span></td>
                 </tr>
-                @*<tr>
-                    <td colspan="2"><input type="checkbox" value="true" asp-for="@SaveAdress" />Spara som min adress</td>
-                </tr>*@
                 <tr>
                     <td colspan="3"><input type="submit" value="Beställ" /></td>
-                    @*<td>
-                        <div id="CheckOut"></div>
-                        @if (Model.Postort != null && Model.Postnr != null && Model.Gatuadress != null)
-                        {
-                            <a asp-controller="Order" asp-action="CheckOut"><input class="btn" type="button" value="Beställ" /></a>
-                        }
-                        else
-                        {
-                            <input class="disabled" type="button" value="Beställ" />
-                        }
-                    </td>*@
                 </tr>
             </table>
         </form>
     </div>
 </div>
 <div class="col-lg-3"></div>
-
-@*<script>
-    $.ready(function() {
-        $("#Gatuadress").blur(function ()
-        {
-            appendCheckOut();
-        });
-        $("#Postnr").blur(function ()
-        {
-            appendCheckOut();
-        });
-        $("#Postort").blur(function ()
-        {
-            appendCheckOut();
-        });
-        function adressFilled() {
-            var isFilled = !($("#Gatuadress")
-                .val() ==
-                null ||
-                $("#Postnr").val() == null ||
-                $("#Postort").val() == null);
-            console.log("isFilled is "+isFilled);
-            return isFilled;
-        }
-
-        function appendCheckOut() {
-            console.log("Blur triggered");
-            if (adressFilled())
-            {
-                console.log("Adress is filled");
-                $("#CheckOut").append('<a asp-controller="Order" asp-action="CheckOut"><input class="btn-success" type="button" value="Beställ" /></a>');
-            } else
-            {
-                $("#CheckOut").append('<input class="disabled" type="button" value="Beställ" />');
-            }
-        }
-    });
-</script>*@

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -37,37 +38,9 @@ namespace TomasosPizza.Controllers
             return View(model);
         }
 
-        public IActionResult OrderView()
+        public IActionResult OrderView(Kund user)
         {
-            // get the order data
-            Bestallning model = new Bestallning();
-            var str = HttpContext.Session.GetString("Order");
-            var order = JsonConvert.DeserializeObject<List<BestallningMatratt>>(str);
-            model.BestallningMatratt = order;
-            
-            // if no customer is logged in, ask user to log in
-            if (HttpContext.Session.GetString("User") == null) 
-                return RedirectToAction("LogInView", "Navigation");
-            
-            // get the logged in customer
-            var id = int.Parse(HttpContext.Session.GetString("User"));
-            var user = _context.Kund.FirstOrDefault(u => u.KundId == id);
-            model.Kund = user;
-            // calculate price in method to make forward-compatible with discounts
-            model.Totalbelopp = CalculatePrice(order, user);
-            model.BestallningDatum = DateTime.Now;
-            model.Levererad = false;
-
-            // Save to Session, so it can be loaded at CheckOut.
-            var tmp = JsonConvert.SerializeObject(model);
-            HttpContext.Session.SetString("FinalOrder",tmp);
-
             return View(user);
-        }
-
-        private int CalculatePrice(List<BestallningMatratt> order, Kund user)
-        {
-            return order.Sum(x => x.Matratt.Pris);
         }
 
         public IActionResult ThankYou()
@@ -88,6 +61,11 @@ namespace TomasosPizza.Controllers
             int userId = int.Parse(HttpContext.Session.GetString("User"));
             Kund user = _context.Kund.First(u => u.KundId == userId);
             return View(user);
+        }
+        [Authorize(Roles = "Administrator")]
+        public IActionResult AdminView()
+        {
+            return View();
         }
     }
 }

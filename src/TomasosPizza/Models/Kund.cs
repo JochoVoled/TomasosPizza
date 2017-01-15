@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TomasosPizza.Models
 {
-    public partial class Kund
+    public class Kund
     {
         public Kund()
         {
@@ -46,5 +46,8 @@ namespace TomasosPizza.Models
         public string Losenord { get; set; }
 
         public virtual ICollection<Bestallning> Bestallning { get; set; }
+
+        [Range(0,100)]
+        public int Poang { get; set; }
     }
 }

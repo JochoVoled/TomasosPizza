@@ -1,0 +1,26 @@
+﻿@model TomasosPizza.Models.Kund
+
+<div class="tomasos-panel">
+    <form asp-controller="Order" asp-action="CheckOut" asp-route-user="@Model" method="post">
+        <table>
+            <tr>
+                <td><label>Gatuadress</label></td>
+                <td><input id="Gatuadress" name="Gatuadress" maxlength="50" value="@Model.Gatuadress" required /></td>
+                <td><span asp-validation-for="Gatuadress"></span></td>
+            </tr>
+            <tr>
+                <td><label>Postnummer</label></td>
+                <td><input id="Postnr" name="Postnr" pattern="^\d{5}$" value="@Model.Postnr" required /></td>
+                <td><span asp-validation-for="Postnr"></span></td>
+            </tr>
+            <tr>
+                <td><label>Postort</label></td>
+                <td><input id="Postort" name="Postort" maxlength="100" value="@Model.Postort" required /></td>
+                <td><span asp-validation-for="Postort"></span></td>
+            </tr>
+            <tr>
+                <td colspan="3"><input type="submit" value="Beställ" /></td>
+            </tr>
+        </table>
+    </form>
+</div>
