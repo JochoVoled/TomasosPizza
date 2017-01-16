@@ -2,65 +2,72 @@
 @{
     string confirm = "";
 }
-<div class="col-lg-3"></div>
-<div class="col-lg-6 tomasos-panel">
-    <form asp-controller="User" asp-action="CreateUser" asp-route-User="@Model" asp-route-confirm="@confirm" method="post">
-        <table class="table-responsive" style="width: 100%">
+
+
+<form asp-controller="User" asp-action="CreateUserAsync" asp-route-User="@Model" asp-route-confirm="@confirm" method="post">
+    <table class="table-responsive" style="width: 100%">
+        <td colspan="2">
+            <h3>Kontouppgifter*</h3>
+        </td>
+        <tr>
+            <td><label asp-for="AnvandarNamn" class="tomasos-text">Användarnamn*</label></td>
+            <td><input asp-for="AnvandarNamn" required maxlength="20" /></td>
+            <td><span asp-validation-for="AnvandarNamn"></span></td>
+        </tr>
+        <tr>
+            <td><label asp-for="Namn" class="tomasos-text">Namn*</label></td>
+            <td><input asp-for="Namn" pattern="^[a-zåäöA-ZÖÅÖ\s]+$" maxlength="100" required /></td>
+            <td><span asp-validation-for="Namn"></span></td>
+        </tr>
+        <tr>
+            <td><label asp-for="Losenord" class="tomasos-text">Lösenord*</label></td>
+            <td><input asp-for="Losenord" type="password" required maxlength="20" /></td>
+            <td><span asp-validation-for="Losenord"></span></td>
+        </tr>
+        <tr>
+            <td><label asp-for="Losenord" class="tomasos-text">Upprepa lösenord*</label></td>
+            <td><input asp-for="@confirm" type="password" required maxlength="20" /></td>
+            <td><span asp-validation-for="Losenord"></span></td>
+        </tr>
+        <tr>
             <td colspan="2">
-                <h3>Kontouppgifter*</h3>
+                <h3>Beställningsuppgifter</h3>
             </td>
-            <tr>
-                <td><label asp-for="AnvandarNamn">Användarnamn*</label></td>
-                <td><input asp-for="AnvandarNamn" required maxlength="20" /></td>
-            </tr>
-            <tr>
-                <td><label asp-for="Namn">Namn*</label></td>
-                <td><input asp-for="Namn" pattern="^[a-zåäöA-ZÖÅÖ\s]+$" maxlength="100" required /></td>
-            </tr>
-            <tr>
-                <td><label asp-for="Losenord">Lösenord*</label></td>
-                <td><input asp-for="Losenord" type="password" required maxlength="20" /></td>
-            </tr>
-            <tr>
-                <td><label asp-for="Losenord">Upprepa lösenord*</label></td>
-                <td><input asp-for="@confirm" type="password" required maxlength="20" /></td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3>Beställningsuppgifter</h3>
-                </td>
-            </tr>
-            <tr>
-                <td><label asp-for="Gatuadress">Adress*</label></td>
-                <td><input asp-for="Gatuadress" maxlength="20" required/></td>
-            </tr>
-            <tr>
-                <td><label asp-for="Postnr">Postnummer*</label></td>
-                <td><input asp-for="Postnr" maxlength="5" pattern="^\d{5}$" required/></td>
-            </tr>
-            <tr>
-                <td><label asp-for="Postort">Postort*</label></td>
-                <td><input asp-for="Postort" maxlength="100" required/></td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3>Kontaktuppgifter</h3>
-                </td>
-            </tr>
-            <tr>
-                <td><label asp-for="Email">E-mail</label></td>
-                <td><input asp-for="AnvandarNamn" maxlength="50" /></td>
-            </tr>
-            <tr>
-                <td><label asp-for="Telefon">Telefon</label></td>
-                <td><input asp-for="Telefon" pattern="^\d+$" maxlength="50" /></td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <input type="submit" value="Registrera" />
-                </td>
-            </tr>
-        </table>
-    </form>
-</div>
-<div class="col-lg-3"></div>
+        </tr>
+        <tr>
+            <td><label asp-for="Gatuadress" class="tomasos-text">Adress*</label></td>
+            <td><input asp-for="Gatuadress" maxlength="20" required /></td>
+            <td><span asp-validation-for="Gatuadress"></span></td>
+        </tr>
+        <tr>
+            <td><label asp-for="Postnr" class="tomasos-text">Postnummer*</label></td>
+            <td><input asp-for="Postnr" maxlength="5" pattern="^\d{5}$" required /></td>
+            <td><span asp-validation-for="Postnr"></span></td>
+        </tr>
+        <tr>
+            <td><label asp-for="Postort" class="tomasos-text">Postort*</label></td>
+            <td><input asp-for="Postort" maxlength="100" required /></td>
+            <td><span asp-validation-for="Postort"></span></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <h3>Kontaktuppgifter</h3>
+            </td>
+        </tr>
+        <tr>
+            <td><label asp-for="Email">E-mail</label></td>
+            <td><input asp-for="Email" maxlength="50" /></td>
+            <td><span asp-validation-for="Email"></span></td>
+        </tr>
+        <tr>
+            <td><label asp-for="Telefon">Telefon</label></td>
+            <td><input asp-for="Telefon" pattern="^\d+$" maxlength="50" /></td>
+            <td><span asp-validation-for="Telefon"></span></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="Registrera" />
+            </td>
+        </tr>
+    </table>
+</form>

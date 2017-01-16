@@ -11,9 +11,11 @@ namespace TomasosPizza.Controllers
     public class AdminController : Controller
     {
         // GET: /<controller>/
-        public IActionResult Index()
-        {
-            return View();
-        }
+        /*
+         * 	[I adminvyn] skall det gå att:
+         * 	   lägga till/uppdatera pizzor/maträtter och ingredienser,
+         * 	   ta bort ordrar eller ändra status på en order.
+	     *  Det skall även gå att uppdatera en RegularUser till PremiumUser eller tvärtom.
+         */
     }
 }

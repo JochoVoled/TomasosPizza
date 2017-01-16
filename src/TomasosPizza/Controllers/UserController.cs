@@ -25,21 +25,6 @@ namespace TomasosPizza.Controllers
             _signInManager = signInManager;
         }
 
-        [HttpPost]
-        public IActionResult LogIn(LoginViewModel user)
-        {
-            if (ModelState.IsValid)
-            {
-                if (IsValidLogIn(user.AnvandarNamn, user.Losenord))
-                {
-                    var matchingUserId = _context.Kund.Single(u => u.AnvandarNamn == user.AnvandarNamn).KundId;
-                    HttpContext.Session.SetString("User", matchingUserId.ToString());
-                    return RedirectToAction("MenuView", "Navigation");
-                }
-            }
-            return RedirectToAction("LogInView","Navigation");
-        }
-
         // todo sync Kund and IdentityKund, so that current users can log in
         [HttpPost]
         public async Task<IActionResult> LogInAsync(Kund user)
@@ -49,15 +34,63 @@ namespace TomasosPizza.Controllers
             {
                 return RedirectToAction("MenuView", "Navigation");
             }
-            return RedirectToAction("LogInView", "Navigation");
+            else
+            {
+                return RedirectToAction("LogInView", "Navigation");
+            }
         }
 
-        [Authorize]
-        public IActionResult LogOut()
-        {
-            HttpContext.Session.Clear();
-            return RedirectToAction("MenuView", "Navigation");
-        }
+        #region Session-Based User Manager
+        //[HttpPost]
+        //public IActionResult LogIn(LoginViewModel user)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        if (IsValidLogIn(user.AnvandarNamn, user.Losenord))
+        //        {
+        //            var matchingUserId = _context.Kund.Single(u => u.AnvandarNamn == user.AnvandarNamn).KundId;
+        //            HttpContext.Session.SetString("User", matchingUserId.ToString());
+        //            return RedirectToAction("MenuView", "Navigation");
+        //        }
+        //    }
+        //    return RedirectToAction("LogInView","Navigation");
+        //}
+        //[Authorize]
+        //public IActionResult LogOut()
+        //{
+        //    HttpContext.Session.Clear();
+        //    return RedirectToAction("MenuView", "Navigation");
+        //}
+
+        //private bool IsValidLogIn(string userName, string password)
+        //{
+        //    var matchingUserName = _context.Kund.FirstOrDefault(u => u.AnvandarNamn == userName);
+        //    if (matchingUserName == null) return false;
+        //    if (matchingUserName.Losenord == password) return true;
+        //    return false;
+        //}
+
+        //public IActionResult CreateUser(Kund newUser, string confirm)
+        //{
+        //    if (_context.Kund.Any(u => u.AnvandarNamn == newUser.AnvandarNamn))
+        //        return RedirectToAction("RegisterView", "Navigation");
+        //    if (newUser.Losenord != confirm)
+        //    {
+        //        return RedirectToAction("RegisterView", "Navigation");
+        //    }
+        //    if (ModelState.IsValid)
+        //    {
+        //        if (newUser.Gatuadress == null) { newUser.Gatuadress = ""; }
+        //        if (newUser.Postnr == null) { newUser.Postnr = ""; }
+        //        if (newUser.Postort == null) { newUser.Postort = ""; }
+        //        _context.Kund.Add(newUser);
+        //        _context.SaveChanges();
+        //        HttpContext.Session.SetString("User",newUser.KundId.ToString());
+        //        return RedirectToAction("MenuView", "Navigation");
+        //    }
+        //    return RedirectToAction("RegisterView","Navigation");
+        //}
+        #endregion
 
         [Authorize]
         public async Task<IActionResult> LogOutAsync()
@@ -66,47 +99,15 @@ namespace TomasosPizza.Controllers
             return RedirectToAction("MenuView", "Navigation");
         }
 
-        private bool IsValidLogIn(string userName, string password)
-        {
-            var matchingUserName = _context.Kund.FirstOrDefault(u => u.AnvandarNamn == userName);
-            if (matchingUserName == null) return false;
-            if (matchingUserName.Losenord == password) return true;
-            return false;
-        }
-
-        public IActionResult CreateUser(Kund newUser, string confirm)
-        {
-            if (_context.Kund.Any(u => u.AnvandarNamn == newUser.AnvandarNamn))
-                return RedirectToAction("RegisterView", "Navigation");
-            if (newUser.Losenord != confirm)
-            {
-                return RedirectToAction("RegisterView", "Navigation");
-            }
-            if (ModelState.IsValid)
-            {
-                if (newUser.Gatuadress == null) { newUser.Gatuadress = ""; }
-                if (newUser.Postnr == null) { newUser.Postnr = ""; }
-                if (newUser.Postort == null) { newUser.Postort = ""; }
-                _context.Kund.Add(newUser);
-                _context.SaveChanges();
-                HttpContext.Session.SetString("User",newUser.KundId.ToString());
-                return RedirectToAction("MenuView", "Navigation");
-            }
-            return RedirectToAction("RegisterView","Navigation");
-        }
-
         public async Task<IActionResult> CreateUserAsync(Kund user,string confirm)
         {
             if (_context.Kund.Any(u => u.AnvandarNamn == user.AnvandarNamn))
-                return RedirectToAction("LogInView", "Navigation");
+            {
+                //return Redirect("/login");
+                RedirectToAction("LogInView", "Navigation");
+            }
             if (user.Losenord != confirm)
                 return RedirectToAction("LogInView", "Navigation");
-            if (user.Gatuadress == null)
-                user.Gatuadress = "";
-            if (user.Postnr == null)
-                user.Postnr = "";
-            if (user.Postort == null)
-                user.Postort = "";
 
             var userIdentity = new IdentityKund
             {
@@ -115,11 +116,14 @@ namespace TomasosPizza.Controllers
                 Email = user.Email,
                 PhoneNumber = user.Telefon,
             };
+            
             var result = await _userManager.CreateAsync(userIdentity, user.Losenord); //todo testa: Vet ej om Kund och IdentityKund kommer lira så här enkelt
             if (result.Succeeded)
             {
+                user.IdentityId = userIdentity.Id;
                 _context.Kund.Add(user);
                 _context.SaveChanges();
+                await _userManager.AddToRoleAsync(userIdentity, "RegularUser");
                 await _signInManager.SignInAsync(userIdentity, false);
                 return RedirectToAction("MenuView", "Navigation");
             }
@@ -135,8 +139,10 @@ namespace TomasosPizza.Controllers
                 Kund user = _context.Kund.First(u => u.KundId == userId);
 
                 // Tips: Raden ska ersätta user med uppdateringar från updatedUser
-                //_context.Entry(user).CurrentValues.SetValues(updatedUser);
+                _context.Entry(user).CurrentValues.SetValues(updatedUser);
 
+                #region OldUpdateCheck
+                /*
                 if (user.AnvandarNamn == updatedUser.AnvandarNamn && updatedUser.AnvandarNamn!=null)
                 {
                     user.AnvandarNamn = updatedUser.AnvandarNamn;
@@ -174,7 +180,8 @@ namespace TomasosPizza.Controllers
                 {
                     // fail user attempt to change password due to invalid password provided
                     return RedirectToAction("UserEdit", "Navigation");
-                }
+                }*/
+                #endregion
 
                 _context.SaveChanges();
                 return RedirectToAction("UserEdit","Navigation");

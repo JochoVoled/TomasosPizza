@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using TomasosPizza.IdentityModels;
 using TomasosPizza.Models;
 using TomasosPizza.ViewModels;
 
@@ -20,6 +22,7 @@ namespace TomasosPizza.Controllers
             _context = context;
         }
 
+        [Route("Menu")]
         public IActionResult MenuView()
         {
             MenuViewModel model = new MenuViewModel();
@@ -40,13 +43,22 @@ namespace TomasosPizza.Controllers
 
         public IActionResult OrderView(Kund user)
         {
-            return View(user);
+            var deliveryModel = new OrderViewModel
+            {
+                Gatuadress = user.Gatuadress,
+                Postort = user.Postort,
+                Postnr = user.Postnr
+            };
+            return View(deliveryModel);
         }
 
         public IActionResult ThankYou()
         {
             return View();
         }
+        [Route("")]
+        [Route("Login")]
+        [Route("Navigation/LogIn")]
         public IActionResult LogInView()
         {
             return View();
@@ -56,13 +68,16 @@ namespace TomasosPizza.Controllers
             return View();
         }
 
+        [Route("EditProfile")]
         public IActionResult UserEdit()
         {
             int userId = int.Parse(HttpContext.Session.GetString("User"));
             Kund user = _context.Kund.First(u => u.KundId == userId);
             return View(user);
         }
+
         [Authorize(Roles = "Administrator")]
+        [Route("Admin")]
         public IActionResult AdminView()
         {
             return View();

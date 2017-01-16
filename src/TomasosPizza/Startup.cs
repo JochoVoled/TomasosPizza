@@ -59,6 +59,8 @@ namespace TomasosPizza
             app.UseStaticFiles();
             app.UseIdentity();
 
+            
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

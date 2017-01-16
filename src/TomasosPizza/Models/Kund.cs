@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using TomasosPizza.IdentityModels;
 
 namespace TomasosPizza.Models
 {
@@ -49,5 +50,8 @@ namespace TomasosPizza.Models
 
         [Range(0,100)]
         public int Poang { get; set; }
+
+        public string IdentityId { get; set; }
+        
     }
 }

@@ -2,7 +2,7 @@
 
 <div style="width: 100%">
     <div class="col-lg-6 tomasos-panel">
-        <form asp-controller="User" asp-action="LogIn" asp-route-User="@Model" method="post">
+        <form asp-controller="User" asp-action="LogInAsync" asp-route-User="@Model" method="post">
             <table>
                 <tr>
                     <td><label class="tomasos-text" asp-for="AnvandarNamn">Användarnamn</label></td>
@@ -19,7 +19,8 @@
         </form>
     </div>
     <div class="col-lg-6 tomasos-panel">
-        @* todo? May have to be ViewComponent, as it uses another model entirely. If so, look up how to do one *@
+        @* todo? May have to be ViewComponent, as it uses another model entirely. If so, look up how to do one*@
+        @* todo WISHLIST: Would like these to use Bootstrap tabs, as it would look cleaner and focus user flow *@
         @Html.Partial("RegisterView");
     </div>
 </div>
