@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using TomasosPizza.IdentityModels;
 using TomasosPizza.Models;
+using TomasosPizza.ViewModels;
 
 namespace TomasosPizza.Controllers
 {
@@ -143,13 +144,13 @@ namespace TomasosPizza.Controllers
             // only save to database if all required fields have actual values
             if (string.IsNullOrWhiteSpace(updatedUser.Gatuadress) || string.IsNullOrWhiteSpace(updatedUser.Postort) || string.IsNullOrWhiteSpace(updatedUser.Postnr))
             {
-                RedirectToAction("OrderView", "Navigation");
+                return RedirectToAction("OrderView", "Navigation");
             }
 
-            //if (!ModelState.IsValid)
-            //{
-            //    return RedirectToAction("OrderView", "Navigation");
-            //}
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("OrderView", "Navigation");
+            }
 
             // only update if any value has been changed
             if (updatedUser.Gatuadress != user.Gatuadress || updatedUser.Postort != user.Postort || updatedUser.Postnr != user.Postnr)

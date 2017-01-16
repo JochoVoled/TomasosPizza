@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TomasosPizza.IdentityModels;
 using TomasosPizza.Models;
+using TomasosPizza.ViewModels;
 
 namespace TomasosPizza.Controllers
 {
@@ -25,7 +26,7 @@ namespace TomasosPizza.Controllers
         }
 
         [HttpPost]
-        public IActionResult LogIn(Kund user)
+        public IActionResult LogIn(LoginViewModel user)
         {
             if (ModelState.IsValid)
             {
@@ -132,6 +133,10 @@ namespace TomasosPizza.Controllers
             {
                 int userId = int.Parse(HttpContext.Session.GetString("User"));
                 Kund user = _context.Kund.First(u => u.KundId == userId);
+
+                // Tips: Raden ska ersätta user med uppdateringar från updatedUser
+                //_context.Entry(user).CurrentValues.SetValues(updatedUser);
+
                 if (user.AnvandarNamn == updatedUser.AnvandarNamn && updatedUser.AnvandarNamn!=null)
                 {
                     user.AnvandarNamn = updatedUser.AnvandarNamn;
