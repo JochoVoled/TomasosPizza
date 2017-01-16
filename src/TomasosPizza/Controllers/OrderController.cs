@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using TomasosPizza.Models;
+using TomasosPizza.ViewModels;
 
 namespace TomasosPizza.Controllers
 {
@@ -81,7 +82,7 @@ namespace TomasosPizza.Controllers
             return order;
         }
 
-        public IActionResult CheckOut(Kund updatedUser)
+        public IActionResult CheckOut(OrderViewModel updatedUser)
         {
             int userId = int.Parse(HttpContext.Session.GetString("User"));
             Kund user = _context.Kund.First(u => u.KundId == userId);
@@ -90,7 +91,7 @@ namespace TomasosPizza.Controllers
             // only save to database if all required fields have actual values
             if (string.IsNullOrWhiteSpace(updatedUser.Gatuadress) || string.IsNullOrWhiteSpace(updatedUser.Postort) || string.IsNullOrWhiteSpace(updatedUser.Postnr))
             {
-                RedirectToAction("OrderView", "Navigation");
+                return RedirectToAction("OrderView", "Navigation");
             }
 
             if (!ModelState.IsValid)

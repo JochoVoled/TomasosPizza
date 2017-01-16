@@ -8,11 +8,11 @@
             <table>
                 <tr>
                     <td><label asp-for="AnvandarNamn">Användarnamn</label></td>
-                    <td><input asp-for="AnvandarNamn" Value="@Model.AnvandarNamn" /></td>
+                    <td><input asp-for="AnvandarNamn" Value="@Model.AnvandarNamn" required/></td>
                 </tr>
                 <tr>
                     <td><label asp-for="Namn">Namn</label></td>
-                    <td><input asp-for="Namn" Value="@Model.Namn" pattern="^[a-zåäöA-ZÖÅÖ\s]+$" /></td>
+                    <td><input asp-for="Namn" Value="@Model.Namn" pattern="^[a-zåäöA-ZÖÅÖ\s]+$" required/></td>
                 </tr>
                 <tr>
                     <td><label asp-for="Email">E-mail</label></td>

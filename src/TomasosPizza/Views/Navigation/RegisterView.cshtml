@@ -7,7 +7,7 @@
     <form asp-controller="User" asp-action="CreateUser" asp-route-User="@Model" asp-route-confirm="@confirm" method="post">
         <table class="table-responsive" style="width: 100%">
             <td colspan="2">
-                <h3>Kontouppgifter</h3>
+                <h3>Kontouppgifter*</h3>
             </td>
             <tr>
                 <td><label asp-for="AnvandarNamn">Användarnamn*</label></td>
@@ -27,6 +27,23 @@
             </tr>
             <tr>
                 <td colspan="2">
+                    <h3>Beställningsuppgifter</h3>
+                </td>
+            </tr>
+            <tr>
+                <td><label asp-for="Gatuadress">Adress*</label></td>
+                <td><input asp-for="Gatuadress" maxlength="20" required/></td>
+            </tr>
+            <tr>
+                <td><label asp-for="Postnr">Postnummer*</label></td>
+                <td><input asp-for="Postnr" maxlength="5" pattern="^\d{5}$" required/></td>
+            </tr>
+            <tr>
+                <td><label asp-for="Postort">Postort*</label></td>
+                <td><input asp-for="Postort" maxlength="100" required/></td>
+            </tr>
+            <tr>
+                <td colspan="2">
                     <h3>Kontaktuppgifter</h3>
                 </td>
             </tr>
@@ -37,23 +54,6 @@
             <tr>
                 <td><label asp-for="Telefon">Telefon</label></td>
                 <td><input asp-for="Telefon" pattern="^\d+$" maxlength="50" /></td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3>Beställningsuppgifter</h3>
-                </td>
-            </tr>
-            <tr>
-                <td><label asp-for="Gatuadress">Adress</label></td>
-                <td><input asp-for="Gatuadress" maxlength="20" /></td>
-            </tr>
-            <tr>
-                <td><label asp-for="Postnr">Postnummer</label></td>
-                <td><input asp-for="Postnr" maxlength="5" pattern="^\d{5}$" /></td>
-            </tr>
-            <tr>
-                <td><label asp-for="Postort">Postort</label></td>
-                <td><input asp-for="Postort" maxlength="100" /></td>
             </tr>
             <tr>
                 <td colspan="2">

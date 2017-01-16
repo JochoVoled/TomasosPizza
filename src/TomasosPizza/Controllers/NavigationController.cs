@@ -52,9 +52,17 @@ namespace TomasosPizza.Controllers
             // get the logged in customer
             var id = int.Parse(HttpContext.Session.GetString("User"));
             var user = _context.Kund.FirstOrDefault(u => u.KundId == id);
+            
+            // only save to database if all required fields have actual values
+            if (string.IsNullOrWhiteSpace(user.Gatuadress) || string.IsNullOrWhiteSpace(user.Postort) || string.IsNullOrWhiteSpace(user.Postnr))
+            {
+                return RedirectToAction("OrderView", "Navigation");
+            }
+
             model.Kund = user;
+            
             // calculate price in method to make forward-compatible with discounts
-            model.Totalbelopp = CalculatePrice(order, user);
+            model.Totalbelopp = CalculatePrice(order);
             model.BestallningDatum = DateTime.Now;
             model.Levererad = false;
 
@@ -62,10 +70,17 @@ namespace TomasosPizza.Controllers
             var tmp = JsonConvert.SerializeObject(model);
             HttpContext.Session.SetString("FinalOrder",tmp);
 
-            return View(user);
+            var deliveryModel = new OrderViewModel
+            {
+                Gatuadress = user.Gatuadress,
+                Postort = user.Postort,
+                Postnr = user.Postnr
+            };
+
+            return RedirectToAction("CheckOut", "Order",deliveryModel);
         }
 
-        private int CalculatePrice(List<BestallningMatratt> order, Kund user)
+        private int CalculatePrice(List<BestallningMatratt> order)
         {
             return order.Sum(x => x.Matratt.Pris);
         }
