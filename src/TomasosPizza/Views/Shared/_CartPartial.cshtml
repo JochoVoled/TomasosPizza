@@ -5,7 +5,7 @@
     string ingredients = "";
 }
 
-<div class="col-lg-6">
+<div style="width: 100%">
     <h1>Din beställning</h1>
     <div class="tomasos-panel">
         <table class="table-responsive" style="width: 100%">
@@ -31,7 +31,7 @@
             {
             <br />
                 <span class="tomasos-text">Pris: @Model.Order.Sum(p => p.Matratt.Pris * p.Antal) :-</span>
-                <span style="float: right"><a asp-controller="Navigation" asp-action="OrderView" asp-route-order="@Model.Order"><input class="btn-success" type="button" value="Lägg beställningen" /></a></span>
+                <span style="float: right"><a asp-controller="Order" asp-action="PrepareOrder" asp-route-order="@Model.Order"><input class="btn-success" type="button" value="Lägg beställningen" /></a></span>
         }
         else
         {

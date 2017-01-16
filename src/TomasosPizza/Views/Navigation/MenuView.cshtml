@@ -43,8 +43,8 @@
         </div>
     </div>
     <div class="col-lg-6">
-        @*@Html.Partial("_CartPartial");*@
-        <h1>Din beställning</h1>
+        @Html.Partial("_CartPartial")
+        @*<h1>Din beställning</h1>
     <div class="tomasos-panel">
         <table class="table-responsive" style="width: 100%">
             @foreach (var rad in @Model.Order)
@@ -75,6 +75,6 @@
         {
             <p>Din beställning är tom. Beställ något från menyn för att fylla på din beställning.</p>
         }
-    </div>
+    </div>*@
     </div>
 </div>

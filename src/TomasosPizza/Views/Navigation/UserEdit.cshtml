@@ -9,34 +9,42 @@
                 <tr>
                     <td><label asp-for="AnvandarNamn">Användarnamn</label></td>
                     <td><input asp-for="AnvandarNamn" Value="@Model.AnvandarNamn" required/></td>
+                    <td><span asp-validation-for="AnvandarNamn"></span></td>
                 </tr>
                 <tr>
                     <td><label asp-for="Namn">Namn</label></td>
                     <td><input asp-for="Namn" Value="@Model.Namn" pattern="^[a-zåäöA-ZÖÅÖ\s]+$" required/></td>
+                    <td><span asp-validation-for="Namn"></span></td>
                 </tr>
                 <tr>
                     <td><label asp-for="Email">E-mail</label></td>
-                    <td><input asp-for="AnvandarNamn" Value="@Model.Email" /></td>
+                    <td><input asp-for="Email" Value="@Model.Email" /></td>
+                    <td><span asp-validation-for="Email"></span></td>
                 </tr>
                 <tr>
                     <td><label asp-for="Telefon">Telefon</label></td>
                     <td><input asp-for="Telefon" Value="@Model.Telefon" pattern="^\d+$" /></td>
+                    <td><span asp-validation-for="Telefon"></span></td>
                 </tr>
                 <tr>
                     <td><label asp-for="Gatuadress">Adress</label></td>
                     <td><input asp-for="Gatuadress" Value="@Model.Gatuadress" /></td>
+                    <td><span asp-validation-for="Gatuadress"></span></td>
                 </tr>
                 <tr>
                     <td><label asp-for="Postnr">Postnummer</label></td>
                     <td><input asp-for="Postnr" Value="@Model.Postnr" pattern="^\d{5}$" /></td>
+                    <td><span asp-validation-for="Postnr"></span></td>
                 </tr>
                 <tr>
                     <td><label asp-for="Postort">Postort</label></td>
                     <td><input asp-for="Postort" Value="@Model.Postort" /></td>
+                    <td><span asp-validation-for="Postort"></span></td>
                 </tr>
                 <tr>
                     <td><label asp-for="Losenord">Nytt Lösenord</label></td>
                     <td><input asp-for="Losenord" type="password" maxlength="30" /></td>
+                    <td><span asp-validation-for="Losenord"></span></td>
                 </tr>
                 <tr>
                     <td><label asp-for="@confirm">Bekräfta med Befintligt Lösenord</label></td>    

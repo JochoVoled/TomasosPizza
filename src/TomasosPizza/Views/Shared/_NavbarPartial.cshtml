@@ -29,7 +29,7 @@
                 @if (SignInManager.IsSignedIn(User))
                 {
                     <li><a asp-area="" asp-controller="User" asp-action="LogOutAsync">Log Out</a></li>
-                    <li><a asp-area="" asp-controller="Navigation" asp-action="UserEdit">Justera profil</a></li>
+                    <li><a asp-area="" asp-controller="Navigation" asp-action="UserEditAsync">Justera profil</a></li>
                     if (User.IsInRole("Administrator"))
                     {
                         <li><a asp-area="" asp-controller="Navigation" asp-action="AdminView">Kontrollpanel</a></li>

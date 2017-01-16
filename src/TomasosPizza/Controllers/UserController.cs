@@ -25,7 +25,7 @@ namespace TomasosPizza.Controllers
             _signInManager = signInManager;
         }
 
-        // todo sync Kund and IdentityKund, so that current users can log in
+        // todo? sync Kund and IdentityKund, so that current users can log in
         [HttpPost]
         public async Task<IActionResult> LogInAsync(Kund user)
         {
@@ -96,7 +96,7 @@ namespace TomasosPizza.Controllers
         public async Task<IActionResult> LogOutAsync()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("MenuView", "Navigation");
+            return RedirectToAction("LogInView", "Navigation");
         }
 
         public async Task<IActionResult> CreateUserAsync(Kund user,string confirm)
@@ -117,7 +117,7 @@ namespace TomasosPizza.Controllers
                 PhoneNumber = user.Telefon,
             };
             
-            var result = await _userManager.CreateAsync(userIdentity, user.Losenord); //todo testa: Vet ej om Kund och IdentityKund kommer lira så här enkelt
+            var result = await _userManager.CreateAsync(userIdentity, user.Losenord);
             if (result.Succeeded)
             {
                 user.IdentityId = userIdentity.Id;
@@ -127,43 +127,48 @@ namespace TomasosPizza.Controllers
                 await _signInManager.SignInAsync(userIdentity, false);
                 return RedirectToAction("MenuView", "Navigation");
             }
+
             return RedirectToAction("LogInView", "Navigation");
         }
 
         [Authorize]
         public IActionResult UpdateUser(Kund updatedUser, string confirm)
         {
+            //todo Panel shows up cleared, with errors, does not accept data and resets to blank on submit
             try
             {
-                int userId = int.Parse(HttpContext.Session.GetString("User"));
-                Kund user = _context.Kund.First(u => u.KundId == userId);
+                var identity = _userManager.GetUserAsync(User);
+                var user = _context.Kund.SingleOrDefault(x => x.IdentityId == identity.Id.ToString());
+
+                //int userId = int.Parse(HttpContext.Session.GetString("User"));
+                //Kund user = _context.Kund.First(u => u.KundId == userId);
 
                 // Tips: Raden ska ersätta user med uppdateringar från updatedUser
-                _context.Entry(user).CurrentValues.SetValues(updatedUser);
+                //_context.Entry(user).CurrentValues.SetValues(updatedUser);
 
                 #region OldUpdateCheck
-                /*
-                if (user.AnvandarNamn == updatedUser.AnvandarNamn && updatedUser.AnvandarNamn!=null)
+
+                if (user.AnvandarNamn != updatedUser.AnvandarNamn && updatedUser.AnvandarNamn != null)
                 {
                     user.AnvandarNamn = updatedUser.AnvandarNamn;
                 }
-                if (user.Namn == updatedUser.Namn && updatedUser.Namn != null)
+                if (user.Namn != updatedUser.Namn && updatedUser.Namn != null)
                 {
                     user.Namn = updatedUser.Namn;
                 }
-                if (user.Gatuadress == updatedUser.Gatuadress && updatedUser.Gatuadress != null)
+                if (user.Gatuadress != updatedUser.Gatuadress && updatedUser.Gatuadress != null)
                 {
                     user.Gatuadress = updatedUser.Gatuadress;
                 }
-                if (user.Postort == updatedUser.Postort && updatedUser.Postort != null)
+                if (user.Postort != updatedUser.Postort && updatedUser.Postort != null)
                 {
                     user.Postort = updatedUser.Postort;
                 }
-                if (user.Postnr == updatedUser.Postnr && updatedUser.Postnr != null)
+                if (user.Postnr != updatedUser.Postnr && updatedUser.Postnr != null)
                 {
                     user.Postnr = updatedUser.Postnr;
                 }
-                if (user.Email == updatedUser.Email && updatedUser.Email != null)
+                if (user.Email != updatedUser.Email && updatedUser.Email != null)
                 {
                     user.Email = updatedUser.Email;
                 }
@@ -176,22 +181,23 @@ namespace TomasosPizza.Controllers
                 {
                     user.Losenord = updatedUser.Losenord;
                 }
-                else if (confirm == user.Losenord && confirm!=null)
+                else if (confirm == user.Losenord && confirm != null)
                 {
-                    // fail user attempt to change password due to invalid password provided
-                    return RedirectToAction("UserEdit", "Navigation");
-                }*/
+                    //fail user attempt to change password due to invalid password provided
+                    return RedirectToAction("UserEditAsync", "Navigation");
+                }
                 #endregion
 
                 _context.SaveChanges();
-                return RedirectToAction("UserEdit","Navigation");
-                // todo (low prio) send "success" message
+                return RedirectToAction("MenuView","Navigation");
+                // todo? send "success" message
             }
             catch (Exception e)
             {
+                //todo solve NullReferenceException on OldUpdateCheck's first line (or solve _context.Entry line)
                 Console.WriteLine(e);
-                return RedirectToAction("UserEdit", "Navigation");
-                // todo (low prio) send error message
+                return RedirectToAction("UserEditAsync", "Navigation");
+                // todo? send error message
             }
 
         }
@@ -201,8 +207,11 @@ namespace TomasosPizza.Controllers
         public IActionResult AddAdress(Kund updatedUser)
         {
             //Kund updatedUser = bestallning.Kund;
-            int userId = int.Parse(HttpContext.Session.GetString("User"));
-            Kund user = _context.Kund.First(u => u.KundId == userId);
+            var identity = _userManager.GetUserAsync(User);
+            var user = _context.Kund.SingleOrDefault(x => x.IdentityId == identity.Id.ToString());
+
+            //int userId = int.Parse(HttpContext.Session.GetString("User"));
+            //Kund user = _context.Kund.First(u => u.KundId == userId);
 
             // only save to database if all required fields have actual values
             if (string.IsNullOrWhiteSpace(updatedUser.Gatuadress) || string.IsNullOrWhiteSpace(updatedUser.Postort) || string.IsNullOrWhiteSpace(updatedUser.Postnr))
@@ -232,5 +241,13 @@ namespace TomasosPizza.Controllers
         {
             await _userManager.RemoveFromRoleAsync(user, "PremiumUser");
         }
+
+        //public Kund GetOnlineKund()
+        //{
+        //    var identity = _userManager.GetUserAsync(User);
+        //    var kund = _context.Kund.SingleOrDefault(x => x.IdentityId == identity.Id.ToString());
+        //    return kund;
+        //}
+
     }
 }

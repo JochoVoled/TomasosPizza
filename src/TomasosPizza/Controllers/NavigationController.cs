@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -13,13 +14,19 @@ using TomasosPizza.ViewModels;
 
 namespace TomasosPizza.Controllers
 {
+    [Authorize]
     public class NavigationController : Controller
     {
         private TomasosContext _context;
+        private readonly UserManager<IdentityKund> _userManager;
+        private readonly SignInManager<IdentityKund> _signInManager;
 
-        public NavigationController(TomasosContext context)
+
+        public NavigationController(TomasosContext context, UserManager<IdentityKund> userManager, SignInManager<IdentityKund> signInManager)
         {
             _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         [Route("Menu")]
@@ -56,24 +63,34 @@ namespace TomasosPizza.Controllers
         {
             return View();
         }
-        [Route("")]
-        [Route("Login")]
-        [Route("Navigation/LogIn")]
+        [Route(""), Route("Login"), Route("Navigation/LogIn")]
+        [AllowAnonymous]
         public IActionResult LogInView()
         {
             return View();
         }
+        [AllowAnonymous]
         public IActionResult RegisterView()
         {
             return View();
         }
 
+        
+        //public IActionResult UserEdit()
+        //{
+        //    int userId = int.Parse(HttpContext.Session.GetString("User"));   
+        //    Kund user = _context.Kund.First(u => u.KundId == userId);
+
+        //    return View(user);
+        //}
+
         [Route("EditProfile")]
-        public IActionResult UserEdit()
+        public async Task<IActionResult> UserEditAsync()
         {
-            int userId = int.Parse(HttpContext.Session.GetString("User"));
-            Kund user = _context.Kund.First(u => u.KundId == userId);
-            return View(user);
+            var identity = await _userManager.GetUserAsync(User);
+            var kund = _context.Kund.SingleOrDefault(x => x.IdentityId == identity.Id.ToString());
+
+            return View("UserEdit",kund);
         }
 
         [Authorize(Roles = "Administrator")]

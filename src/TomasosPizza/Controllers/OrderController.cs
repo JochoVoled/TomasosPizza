@@ -89,6 +89,7 @@ namespace TomasosPizza.Controllers
 
         public IActionResult PrepareOrder()
         {
+            //todo Panel shows up cleared, with errors, does not accept data and resets to blank on submit
             // get the order data
             Bestallning model = new Bestallning();
             var str = HttpContext.Session.GetString("Order");
@@ -96,12 +97,16 @@ namespace TomasosPizza.Controllers
             model.BestallningMatratt = order;
 
             // if no customer is logged in, ask user to log in
-            if (HttpContext.Session.GetString("User") == null)
-                return RedirectToAction("LogInView", "Navigation");
+            //if (HttpContext.Session.GetString("User") == null)
+            //    return RedirectToAction("LogInView", "Navigation");
 
-            // get the logged in customer
-            var id = int.Parse(HttpContext.Session.GetString("User"));
-            var user = _context.Kund.FirstOrDefault(u => u.KundId == id);
+            var identity = _userManager.GetUserAsync(User);
+            var user = _context.Kund.SingleOrDefault(x => x.IdentityId == identity.Id.ToString());
+
+            //var id = int.Parse(HttpContext.Session.GetString("User"));
+            //var user = _context.Kund.FirstOrDefault(u => u.KundId == id);
+
+
             model.Kund = user;
             // calculate price in method to make forward-compatible with discounts
             model.Totalbelopp = CalculatePrice(order, user);
@@ -125,7 +130,12 @@ namespace TomasosPizza.Controllers
             if (User.IsInRole("PremiumUser"))
             {
                 decimal multiplier = order.Count > 3 ? 0.8m : 1m;
-                int discount= user.Poang >= 100 ? order.Min(p => p.Matratt.Pris) : 0;
+                int discount = 0;
+                if (user.Poang >= 100)
+                {
+                    discount = order.Min(p => p.Matratt.Pris);
+                    user.Poang -= 100;
+                }
                 return (int)Math.Round((order.Sum(x => x.Matratt.Pris) - discount) * multiplier,2);
             }
             else
@@ -137,10 +147,13 @@ namespace TomasosPizza.Controllers
 
         public IActionResult CheckOut(Kund updatedUser)
         {
-            int userId = int.Parse(HttpContext.Session.GetString("User"));
-            Kund user = _context.Kund.First(u => u.KundId == userId);
+            var identity = _userManager.GetUserAsync(User);
+            var user = _context.Kund.SingleOrDefault(x => x.IdentityId == identity.Id.ToString());
 
-            
+            //int userId = int.Parse(HttpContext.Session.GetString("User"));
+            //Kund user = _context.Kund.First(u => u.KundId == userId);
+
+
             // only save to database if all required fields have actual values
             if (string.IsNullOrWhiteSpace(updatedUser.Gatuadress) || string.IsNullOrWhiteSpace(updatedUser.Postort) || string.IsNullOrWhiteSpace(updatedUser.Postnr))
             {
@@ -184,6 +197,7 @@ namespace TomasosPizza.Controllers
                     Antal = matratt.Antal
                 };
                 _context.Add(m);
+                user.Poang += 10;
             }
             _context.SaveChanges();
             return RedirectToAction("ThankYou", "Navigation");

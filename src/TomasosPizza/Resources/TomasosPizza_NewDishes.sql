@@ -20,4 +20,11 @@ INSERT INTO MatrattProdukt VALUES
 ALTER TABLE Kund ADD Poang int
 
 USE [Identity];
-INSERT INTO AspNetRoles VALUES(3,NULL,'PremiumUser',1);
+DELETE FROM AspNetRoles;
+INSERT INTO AspNetRoles VALUES
+	(1,NULL,'Administrator',1),
+	(2,NULL,'RegularUser',2),
+	(3,NULL,'PremiumUser',3);
+
+--If something goes wrong, here are the SQL-commands to set role
+INSERT INTO AspNetUserRoles VALUES('eb1b67db-7766-4d78-a96f-f1d23310c551',2);
