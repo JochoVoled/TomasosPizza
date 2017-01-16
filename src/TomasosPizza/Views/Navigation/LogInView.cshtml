@@ -1,31 +1,8 @@
 ﻿@model TomasosPizza.ViewModels.LoginViewModel
 
-<div class="col-lg-3"></div>
-<div class="col-lg-6 tomasos-panel">
-    <form asp-controller="User" asp-action="LogIn" asp-route-User="@Model" method="post">
-        <table>
-            <tr>
-                <td><label class="tomasos-text" asp-for="AnvandarNamn">Användarnamn</label></td>
-                <td><input type="text" asp-for="AnvandarNamn" required /></td>
-            </tr>
-            <tr>
-                <td><label class="tomasos-text" asp-for="Losenord">Lösenord</label></td>
-                <td><input type="password" asp-for="Losenord" maxlength="30" required /></td>
-            </tr>
-            <tr>
-                <td colspan="2"><input type="submit" Value="Logga in" /></td>
-            </tr>
-        </table>
-    </form>
-</div>
-<div class="col-lg-3"></div>
-@model TomasosPizza.Models.Kund
-@{
-    string confirm = "";
-}
 <div style="width: 100%">
     <div class="col-lg-6 tomasos-panel">
-        <form asp-controller="User" asp-action="LogInAsync" asp-route-User="@Model" method="post">
+        <form asp-controller="User" asp-action="LogIn" asp-route-User="@Model" method="post">
             <table>
                 <tr>
                     <td><label class="tomasos-text" asp-for="AnvandarNamn">Användarnamn</label></td>
@@ -42,65 +19,7 @@
         </form>
     </div>
     <div class="col-lg-6 tomasos-panel">
-        <form asp-controller="User" asp-action="CreateUserAsync" asp-route-User="@Model" asp-route-confirm="@confirm" method="post">
-            <table class="table-responsive" style="width: 100%">
-                <tr>
-                    <td colspan="2">
-                        <h3>Kontouppgifter</h3>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label asp-for="AnvandarNamn">Användarnamn*</label></td>
-                    <td><input asp-for="AnvandarNamn" required maxlength="20" /></td>
-                </tr>
-                <tr>
-                    <td><label asp-for="Namn">Namn*</label></td>
-                    <td><input asp-for="Namn" pattern="^[a-zåäöA-ZÖÅÖ\s]+$" maxlength="100" required /></td>
-                </tr>
-                <tr>
-                    <td><label asp-for="Losenord">Lösenord*</label></td>
-                    <td><input asp-for="Losenord" type="password" required maxlength="20" /></td>
-                </tr>
-                <tr>
-                    <td><label asp-for="Losenord">Upprepa lösenord*</label></td>
-                    <td><input asp-for="@confirm" type="password" required maxlength="20" /></td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <h3>Kontaktuppgifter</h3>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label asp-for="Email">E-mail</label></td>
-                    <td><input asp-for="AnvandarNamn" maxlength="50" /></td>
-                </tr>
-                <tr>
-                    <td><label asp-for="Telefon">Telefon</label></td>
-                    <td><input asp-for="Telefon" pattern="^\d+$" maxlength="50" /></td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <h3>Beställningsuppgifter</h3>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label asp-for="Gatuadress">Adress</label></td>
-                    <td><input asp-for="Gatuadress" maxlength="20" /></td>
-                </tr>
-                <tr>
-                    <td><label asp-for="Postnr">Postnummer</label></td>
-                    <td><input asp-for="Postnr" maxlength="5" pattern="^\d{5}$" /></td>
-                </tr>
-                <tr>
-                    <td><label asp-for="Postort">Postort</label></td>
-                    <td><input asp-for="Postort" maxlength="100" /></td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <input type="submit" value="Registrera" />
-                    </td>
-                </tr>
-            </table>
-        </form>
+        @* todo? May have to be ViewComponent, as it uses another model entirely. If so, look up how to do one *@
+        @Html.Partial("RegisterView");
     </div>
 </div>
