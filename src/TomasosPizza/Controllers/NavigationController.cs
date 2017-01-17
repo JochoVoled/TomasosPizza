@@ -48,6 +48,23 @@ namespace TomasosPizza.Controllers
             return View(model);
         }
 
+        public IActionResult CartPartial()
+        {
+            MenuViewModel model = new MenuViewModel();
+            model.Menu = _context.Matratt.Include(x => x.MatrattProdukt).ThenInclude(x => x.Produkt).ToList();
+            foreach (var product in model.Menu)
+            {
+                product.MatrattTypNavigation =
+                _context.MatrattTyp.FirstOrDefault(t => t.MatrattTyp1 == product.MatrattTyp);
+            }
+            if (HttpContext.Session.GetString("Order") != null)
+            {
+                string str = HttpContext.Session.GetString("Order");
+                model.Order = JsonConvert.DeserializeObject<List<BestallningMatratt>>(str);
+            }
+            return PartialView("_CartPartial",model);
+        }
+
         public IActionResult OrderView(Kund user)
         {
             var deliveryModel = new OrderViewModel
@@ -56,12 +73,12 @@ namespace TomasosPizza.Controllers
                 Postort = user.Postort,
                 Postnr = user.Postnr
             };
-            return View(deliveryModel);
+            return PartialView("_DeliveryPartial",deliveryModel);
         }
 
         public IActionResult ThankYou()
         {
-            return View();
+            return PartialView("_ThankYouPartial");
         }
         [Route(""), Route("Login"), Route("Navigation/LogIn")]
         [AllowAnonymous]

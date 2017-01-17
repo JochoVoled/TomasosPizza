@@ -43,7 +43,7 @@ namespace TomasosPizza.Controllers
             
             Reserialize(order);
 
-            return RedirectToAction("MenuView", "Navigation");
+            return RedirectToAction("CartPartial", "Navigation");
         }
 
         public IActionResult RemoveFromOrder(int id)
@@ -61,7 +61,7 @@ namespace TomasosPizza.Controllers
             }
             
             Reserialize(order);
-            return RedirectToAction("MenuView", "Navigation");
+            return RedirectToAction("CartPartial", "Navigation");
         }
 
         private void Reserialize(List<BestallningMatratt> order)
@@ -115,7 +115,7 @@ namespace TomasosPizza.Controllers
             return RedirectToAction("OrderView","Navigation",user);
         }
 
-        private int CalculatePrice(List<BestallningMatratt> order, Kund user) // todo user should not be null
+        private int CalculatePrice(List<BestallningMatratt> order, Kund user)
         {
             if (User.IsInRole("PremiumUser"))
             {
