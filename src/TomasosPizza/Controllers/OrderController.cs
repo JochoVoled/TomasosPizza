@@ -4,11 +4,9 @@ using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using TomasosPizza.IdentityModels;
 using TomasosPizza.Models;
-using TomasosPizza.ViewModels;
 
 namespace TomasosPizza.Controllers
 {
@@ -89,23 +87,17 @@ namespace TomasosPizza.Controllers
 
         public IActionResult PrepareOrder()
         {
-            //todo Panel shows up cleared, with errors, does not accept data and resets to blank on submit
             // get the order data
             Bestallning model = new Bestallning();
             var str = HttpContext.Session.GetString("Order");
             var order = JsonConvert.DeserializeObject<List<BestallningMatratt>>(str);
             model.BestallningMatratt = order;
 
-            // if no customer is logged in, ask user to log in
-            //if (HttpContext.Session.GetString("User") == null)
-            //    return RedirectToAction("LogInView", "Navigation");
-
-            var identity = _userManager.GetUserAsync(User);
-            var user = _context.Kund.SingleOrDefault(x => x.IdentityId == identity.Id.ToString());
+            var identity = _userManager.GetUserAsync(User).Result;
+            var user = _context.Kund.SingleOrDefault(x => x.AnvandarNamn == identity.UserName);
 
             //var id = int.Parse(HttpContext.Session.GetString("User"));
             //var user = _context.Kund.FirstOrDefault(u => u.KundId == id);
-
 
             model.Kund = user;
             // calculate price in method to make forward-compatible with discounts
@@ -116,21 +108,21 @@ namespace TomasosPizza.Controllers
             // Save to Session, so it can be loaded at CheckOut.
             var tmp = JsonConvert.SerializeObject(model);
             HttpContext.Session.SetString("FinalOrder", tmp);
+            if (user.Gatuadress!=null && user.Postort!=null && user.Postnr!=null)
+            {
+                return RedirectToAction("CheckOut", "Order", user);
+            }
             return RedirectToAction("OrderView","Navigation",user);
         }
 
-        private int CalculatePrice(List<BestallningMatratt> order, Kund user)
+        private int CalculatePrice(List<BestallningMatratt> order, Kund user) // todo user should not be null
         {
-            //Köper den tre pizzor/ maträtter eller mer får den 20 % rabatt på beställningen.
-            // IF Order.Count > 3, sum() * 0.8, else sum()
-            //För varje pizza eller maträtt den köper får den 10 bonuspoäng.
-            
-            //När den har 100 poäng ger det en gratis pizza vid en beställning.
-            // At CalculatePrice(), if points => 100, find lowest Price of Order, set its Price = 0
             if (User.IsInRole("PremiumUser"))
             {
-                decimal multiplier = order.Count > 3 ? 0.8m : 1m;
+                //Köper den tre pizzor/ maträtter eller mer får den 20 % rabatt på beställningen.
+                decimal multiplier = order.Count >= 3 ? 0.8m : 1m;
                 int discount = 0;
+                //När den har 100 poäng ger det en gratis pizza vid en beställning.
                 if (user.Poang >= 100)
                 {
                     discount = order.Min(p => p.Matratt.Pris);
@@ -147,12 +139,11 @@ namespace TomasosPizza.Controllers
 
         public IActionResult CheckOut(Kund updatedUser)
         {
-            var identity = _userManager.GetUserAsync(User);
-            var user = _context.Kund.SingleOrDefault(x => x.IdentityId == identity.Id.ToString());
+            var identity = _userManager.GetUserAsync(User).Result;
+            var user = _context.Kund.SingleOrDefault(x => x.AnvandarNamn == identity.UserName);
 
             //int userId = int.Parse(HttpContext.Session.GetString("User"));
             //Kund user = _context.Kund.First(u => u.KundId == userId);
-
 
             // only save to database if all required fields have actual values
             if (string.IsNullOrWhiteSpace(updatedUser.Gatuadress) || string.IsNullOrWhiteSpace(updatedUser.Postort) || string.IsNullOrWhiteSpace(updatedUser.Postnr))
@@ -160,10 +151,10 @@ namespace TomasosPizza.Controllers
                 return RedirectToAction("OrderView", "Navigation");
             }
 
-            if (!ModelState.IsValid)
-            {
-                return RedirectToAction("OrderView", "Navigation");
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return RedirectToAction("OrderView", "Navigation");
+            //}
 
             // only update if any value has been changed
             if (updatedUser.Gatuadress != user.Gatuadress || updatedUser.Postort != user.Postort || updatedUser.Postnr != user.Postnr)

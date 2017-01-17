@@ -87,8 +87,11 @@ namespace TomasosPizza.Controllers
         [Route("EditProfile")]
         public async Task<IActionResult> UserEditAsync()
         {
-            var identity = await _userManager.GetUserAsync(User);
-            var kund = _context.Kund.SingleOrDefault(x => x.IdentityId == identity.Id.ToString());
+            //var identity = await _userManager.GetUserAsync(User);
+            //var kund = _context.Kund.SingleOrDefault(x => x.IdentityId == identity.Id.ToString());
+
+            var identity = _userManager.GetUserAsync(User).Result;
+            var kund = _context.Kund.SingleOrDefault(x => x.AnvandarNamn == identity.UserName);
 
             return View("UserEdit",kund);
         }

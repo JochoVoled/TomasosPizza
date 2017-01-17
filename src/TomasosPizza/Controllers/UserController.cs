@@ -104,7 +104,7 @@ namespace TomasosPizza.Controllers
             if (_context.Kund.Any(u => u.AnvandarNamn == user.AnvandarNamn))
             {
                 //return Redirect("/login");
-                RedirectToAction("LogInView", "Navigation");
+                return RedirectToAction("LogInView", "Navigation");
             }
             if (user.Losenord != confirm)
                 return RedirectToAction("LogInView", "Navigation");
@@ -134,24 +134,20 @@ namespace TomasosPizza.Controllers
         [Authorize]
         public IActionResult UpdateUser(Kund updatedUser, string confirm)
         {
-            //todo Panel shows up cleared, with errors, does not accept data and resets to blank on submit
             try
             {
-                var identity = _userManager.GetUserAsync(User);
-                var user = _context.Kund.SingleOrDefault(x => x.IdentityId == identity.Id.ToString());
-
-                //int userId = int.Parse(HttpContext.Session.GetString("User"));
-                //Kund user = _context.Kund.First(u => u.KundId == userId);
+                var identity = _userManager.GetUserAsync(User).Result;
+                var user = _context.Kund.SingleOrDefault(x => x.AnvandarNamn == identity.UserName);
 
                 // Tips: Raden ska ersätta user med uppdateringar från updatedUser
                 //_context.Entry(user).CurrentValues.SetValues(updatedUser);
 
                 #region OldUpdateCheck
 
-                if (user.AnvandarNamn != updatedUser.AnvandarNamn && updatedUser.AnvandarNamn != null)
-                {
-                    user.AnvandarNamn = updatedUser.AnvandarNamn;
-                }
+                //if (user.AnvandarNamn != updatedUser.AnvandarNamn && updatedUser.AnvandarNamn != null)
+                //{
+                //    user.AnvandarNamn = updatedUser.AnvandarNamn;
+                //}
                 if (user.Namn != updatedUser.Namn && updatedUser.Namn != null)
                 {
                     user.Namn = updatedUser.Namn;
@@ -194,7 +190,6 @@ namespace TomasosPizza.Controllers
             }
             catch (Exception e)
             {
-                //todo solve NullReferenceException on OldUpdateCheck's first line (or solve _context.Entry line)
                 Console.WriteLine(e);
                 return RedirectToAction("UserEditAsync", "Navigation");
                 // todo? send error message
@@ -207,8 +202,12 @@ namespace TomasosPizza.Controllers
         public IActionResult AddAdress(Kund updatedUser)
         {
             //Kund updatedUser = bestallning.Kund;
-            var identity = _userManager.GetUserAsync(User);
-            var user = _context.Kund.SingleOrDefault(x => x.IdentityId == identity.Id.ToString());
+            //var identity = _userManager.GetUserAsync(User);
+            //var identity = _userManager.FindByIdAsync();
+            var identity = User.Identity.GetHashCode();
+            //var user = _context.Kund.SingleOrDefault(x => x.IdentityId == identity.Id.ToString());
+            var user = _context.Kund.SingleOrDefault(x => int.Parse(x.IdentityId) == identity);
+
 
             //int userId = int.Parse(HttpContext.Session.GetString("User"));
             //Kund user = _context.Kund.First(u => u.KundId == userId);
