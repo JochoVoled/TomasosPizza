@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http
-@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
 @using TomasosPizza.IdentityModels
 
 @inject SignInManager<IdentityKund> SignInManager;
@@ -16,7 +15,7 @@
             </button>
             @if (SignInManager.IsSignedIn(User))
             {
-                <a asp-area="" asp-controller="Navigation" asp-action="MenuView" class="navbar-brand">Tomasos Pizza</a>
+                <a class="navbar-brand h1" asp-area="" asp-controller="Navigation" asp-action="MenuView">Tomasos Pizza</a>
             }
             else
             {
@@ -25,7 +24,8 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                @*@if (Context.Session.GetString("User") == null)*@
+                @* todo Items in If show on login screen, which they should not
+                    @if (Context.Session.GetString("User") == null)*@
                 @if (SignInManager.IsSignedIn(User))
                 {
                     <li><a asp-area="" asp-controller="User" asp-action="LogOutAsync">Log Out</a></li>

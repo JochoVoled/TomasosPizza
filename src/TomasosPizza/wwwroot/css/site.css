@@ -1,12 +1,20 @@
 ﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
     background-color: #FF4337;
 }
 
+.body-content {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
 .tomasos-panel {
-    background-color: #FFF; /*#FF8B84;*/
-    padding: 10px;
+    background-color: #FF8B84; /*#FF8B84;*/
+    /*padding: 10px;*/
+    margin: 5px;
+    height: 80%;
+    overflow-y: auto;
+    
+    /*overflow-scrolling: auto;*/
     border-top-right-radius: 20px;
     border-bottom-left-radius: 20px;
 }

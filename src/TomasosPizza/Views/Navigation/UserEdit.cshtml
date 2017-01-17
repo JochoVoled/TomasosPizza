@@ -2,18 +2,122 @@
 @{
     string confirm = "";
 }
-<div class="col-lg-6" style="align-self: center">
+@* todo (low prio), check http://www.w3schools.com/bootstrap/bootstrap_popover.asp and see if applicable to navbar *@
+<div class="col-lg-offset-3 col-lg-6" style="align-self: center">
     <div class="tomasos-panel">
         @* todo evaluate Bootstrap form and maybe apply it to the other forms *@
         <form class="form-horizontal" asp-controller="User" asp-action="UpdateUser" asp-route-User="@Model" asp-route-confirm="@confirm" method="post">
             <div class="form-group">
-                <label class="control-label col-lg-2" asp-for="AnvandarNamn">Användarnamn</label>
-                <input class="form-control col-lg-10" asp-for="AnvandarNamn" Value="@Model.AnvandarNamn" disabled required/>
-                <span class="form-control-feedback col-lg-12" asp-validation-for="AnvandarNamn"></span>
+                <label class="control-label col-lg-3" asp-for="AnvandarNamn">Användarnamn</label>
+                <div class="col-lg-9">
+                    <input class="form-control" asp-for="AnvandarNamn" Value="@Model.AnvandarNamn" disabled required />
+                </div>
+                <div class="col-lg-12">
+                    <span class="form-control-feedback" asp-validation-for="AnvandarNamn"></span>
+                </div>
             </div>
-            <table>
+            <div class="form-group">
+                <label class="control-label col-lg-3" asp-for="Namn">Namn</label>
+                <div class="col-lg-9">
+                    <input class="form-control" asp-for="Namn" Value="@Model.Namn" pattern="^[a-zåäöA-ZÖÅÖ\s]+$" required />
+                </div>
+                <div class="col-lg-12">
+                    <span class="form-control-feedback" asp-validation-for="Namn"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-lg-3" asp-for="Namn">Namn</label>
+                <div class="col-lg-9">
+                    <input class="form-control" asp-for="Namn" Value="@Model.Namn" pattern="^[a-zåäöA-ZÖÅÖ\s]+$" required/>
+                </div>
+                <div class="col-lg-12">
+                    <span class="form-control-feedback" asp-validation-for="Namn"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-lg-3" asp-for="Email">E-mail</label>
+                <div class="col-lg-9">
+                    <input class="form-control" asp-for="Email" Value="@Model.Email" />
+                </div>
+                <div class="col-lg-12">
+                    <span class="form-control-feedback" asp-validation-for="Email"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-lg-3" asp-for="Telefon">Telefon</label>
+                <div class="col-lg-9">
+                    <input class="form-control" asp-for="Telefon" Value="@Model.Telefon" pattern="^\d+$" />
+                </div>
+                <div class="col-lg-12">
+                    <span class="form-control-feedback" asp-validation-for="Telefon"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-lg-3" asp-for="Gatuadress">Adress</label>
+                <div class="col-lg-9">
+                    <input class="form-control" asp-for="Gatuadress" Value="@Model.Gatuadress" />
+                </div>
+                <div class="col-lg-12">
+                    <span class="form-control-feedback" asp-validation-for="Gatuadress"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-lg-3" asp-for="Postnr">Postnummer</label>
+                <div class="col-lg-9">
+                    <input class="form-control" asp-for="Postnr" Value="@Model.Postnr" pattern="^\d{5}$" />
+                </div>
+                <div class="col-lg-12">
+                    <span class="form-control-feedback" asp-validation-for="Postnr"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-lg-3" asp-for="Postort">Postort</label>
+                <div class="col-lg-9">
+                    <input class="form-control" asp-for="Postort" Value="@Model.Postort" />
+                </div>
+                <div class="col-lg-12">
+                    <span class="form-control-feedback" asp-validation-for="Postort"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-lg-3" asp-for="Postort">Postort</label>
+                <div class="col-lg-9">
+                    <input class="form-control" asp-for="Postort" Value="@Model.Postort" />
+                </div>
+                <div class="col-lg-12">
+                    <span class="form-control-feedback" asp-validation-for="Postort"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-lg-3" asp-for="Losenord">Lösenord</label>
+                <div class="col-lg-9">
+                    <input class="form-control" asp-for="Losenord" Value="@Model.Losenord" />
+                </div>
+                <div class="col-lg-12">
+                    <span class="form-control-feedback" asp-validation-for="Postort"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-lg-3" asp-for="@confirm">Bekräfta med Befintligt Lösenord</label>
+                <div class="col-lg-9">
+                    <input class="form-control" asp-for="@confirm" type="password" maxlength="30" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-lg-3">Poäng till Gratis</label>
+                <div class="progress col-lg-8">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="@Model.Poang"
+                         aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                        @Model.Poang
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-offset-3 col-lg-9">
+                <input class="btn btn-default" type="submit" value="Uppdatera" />
+            </div>
+            @*<table>
                 <tr>
-
                 </tr>
                 <tr>
                     <td><label asp-for="Namn">Namn</label></td>
@@ -55,14 +159,6 @@
                     <td><input asp-for="@confirm" type="password" maxlength="30"/></td>
                 </tr>
                 <tr>
-                    @*<td colspan="3">
-                        <div class="progress">
-                            <div class="progress-bar" role="progressbar" aria-valuenow="@Model.Poang"
-                                 aria-valuemin="0" aria-valuemax="100" style="width:100%">
-                                @Model.Poang
-                            </div>
-                        </div>
-                    </td>*@
                     <td><span class="tomasos-text">Poäng</span></td>
                     <td><progress value="@Model.Poang" max="100"></progress></td>
                     <td>@Model.Poang av 100</td>
@@ -70,7 +166,7 @@
                 <tr>
                     <td colspan="2"><input type="submit" value="Uppdatera"/></td>
                 </tr>
-            </table>
+            </table>*@
         </form>
     </div>
 </div>
