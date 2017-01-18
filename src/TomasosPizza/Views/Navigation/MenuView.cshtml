@@ -6,11 +6,11 @@
 
 <div style="width: 100%">
     <div class="col-lg-5">
-        <h1>På menyn</h1>
         <div class="tomasos-panel">
+            <h1>På menyn</h1>
             <table class="table-responsive" style="width: 100%">
                 @foreach (var product in @Model.Menu)
-            {
+                {
                     <tr>
                         <td>
                             <p class="tomasos-text">@product.MatrattNamn (@product.MatrattTypNavigation.Beskrivning)</p>
@@ -33,11 +33,11 @@
                         </td>
                         <td>
                             @*<span style="float: right"><a asp-controller="Order" asp-action="AddToOrder" asp-route-id="@product.MatrattId"><input type="button" value="Beställ en" /></a></span>*@
-                            <span style="float: right"><a asp-controller="Order" asp-action="AddToOrder" asp-route-id="@product.MatrattId" data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#cart"><input type="button" value="Beställ en" /></a></span>
+                            <span style="float: right"><a asp-controller="Order" asp-action="AddToOrder" asp-route-id="@product.MatrattId" data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#cart"><input type="button" value="Beställ en"/></a></span>
                         </td>
                     </tr>
                     <tr></tr>
-               }
+                }
             </table >
         </div>
     </div>

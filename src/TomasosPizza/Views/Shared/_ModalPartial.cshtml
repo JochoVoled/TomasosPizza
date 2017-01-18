@@ -1,0 +1,43 @@
+﻿@model TomasosPizza.ViewModels.ModalViewModel
+<!-- Model requires a specific Matratt, and a list of all Produkt -->
+<div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Lägg till Maträtt</h4>
+        </div>
+        <div class="modal-body">
+            <!-- The fun stuff -->
+            <form>
+                <div class="form-group col-lg-3">
+                    <label></label>
+                    <div class="col-lg-9">
+                        <input class="col-lg-9" type="text" asp-for="@Model.Matratt.MatrattNamn" />
+                    </div>
+                </div>
+                @foreach (var ingredient in Model.Produkter)
+                {
+                    <div class="form-group">
+                        <label class="control-label col-lg-8">@ingredient.ProduktNamn</label>
+                        <div class="col-lg-1">
+                            <!-- todo consider if one-way checkbox is the right call or if unDeliver-ing should be allowed -->
+                            @if (@Model.Matratt.MatrattProdukt.Any(x => x.Produkt == ingredient))
+                            {
+                                <input class="checkbox-inline" type="checkbox" checked="checked" disabled value="True" />
+                            }
+                            else
+                            {
+                                <input class="checkbox-inline" type="checkbox" value="false" />
+                            }
+                        </div>
+                    </div>
+                }
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Stäng</button>
+            <a asp-controller="Admin" asp-action="SaveMatratt"><input type="button" class="btn btn-info" value="OK"></a>
+        </div>
+    </div>
+</div>

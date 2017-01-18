@@ -1,1 +1,139 @@
-﻿
+﻿@* Tre paneler: Menyhantering, Orderhantering, Användarbehörighet. 4-4-4
+    Menyhantering: Lista av alla Maträtter med Redigera-knapp, samt "Skapa ny"-knapp underst
+        Redigera-knappen öppnar modal med formulär: Textfält för beskrivning, Dropdown för typ, lista med checkbox för ingrediens
+            Listan ifråga ska också kunna lägga till nya produkter
+        Skapa Ny-knappen öppnar samma modal, dock utan förifyllda värden
+    Orderhantering: Listar alla Bestallning, visar information om dessa samt en checkbox för om de är levererade (true) eller ej (false)
+        Har spara-knapp som uppdaterar hela listan
+    Användarbehörighet har lista av alla Kund, visar kopplad AspNetUsers AspNetRole genom RadioButtonGroup (Premium resp Regular).
+        Spara-knapp uppdaterar förändringar till DbSet AspNetUserRoles
+    "Skapa Ny" samt Spara-knapparna bör ligga i col-lg-4-paneler, men utanför panelerna de uppdaterar, för att möjliggöra AJAX*@
+
+@using TomasosPizza.Models
+@model TomasosPizza.ViewModels.AdminViewModel
+@{
+    Matratt editFood = null;
+}
+@* Menyhantering *@
+<!-- data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#cart" -->
+<div class="col-lg-4">
+    <div id="menuManager" class="tomasos-panel">
+        <h2 class="col-lg-offset-1">Menyhantering</h2>
+        @foreach (var dish in Model.Matratter)
+        {
+            <form asp-controller="Admin" asp-action="BeginUpdateMatratt">
+                @* todo evaluate how this looks. I expect it to look dumb *@
+                <div class="input-group">
+                    @*<span class="control-label col-lg-offset-1">@dish.MatrattNamn</span>*@
+                    <input type="text" class="form-control" placeholder="@dish.MatrattNamn" disabled>
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" type="submit" data-ajax="True" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#MatrattModal">
+                            <!-- Button should send DishId to modal -->
+                            <i class="glyphicon glyphicon-edit"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        }
+        <form asp-controller="Admin" asp-action="AddNewToMenu">
+            <div class="form-group align-right">
+                <input type="submit" class="btn btn-default" data-toggle="modal" data-target="#AddMatrattModal" value="Ny Maträtt" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Ny Maträtt-Modal -->
+@*
+    <div id="MatrattModal" class="modal fade" role="dialog">
+        <!-- Ideal place for partial view to be? -->
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Lägg till Maträtt</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- The fun stuff -->
+                    <form>
+                        <div class="form-group col-lg-3">
+                            <label></label>
+                            <div class="col-lg-9">
+                                <input class="col-lg-9" type="text" asp-for="@editFood.MatrattNamn"/>
+                            </div>
+                        </div>
+                        @foreach (var ingredient in Model.Ingredienser)
+                        {
+
+                        }
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Stäng</button>
+                    <a asp-controller="Admin" asp-action="SaveMatratt"><input type="button" class="btn btn-info" value="OK"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+*@
+@* Orderhantering *@
+<div class="col-lg-4">
+    <div id="orderManager" class="tomasos-panel">
+        <h2 class="col-lg-offset-1">Orderhantering</h2>
+        <form asp-controller="Admin" asp-action="UpdateOrderDelivered">
+            @foreach (var order in Model.Bestallningar)
+            {
+                <div class="form-group">
+                    <label class="control-label col-lg-8">@order.BestallningDatum.Date av @order.Kund.Namn</label>
+                    <div class="col-lg-1">
+                        <!-- todo consider if one-way checkbox is the right call or if unDeliver-ing should be allowed -->
+                        @if (order.Levererad)
+                        {
+                            <input class="checkbox-inline" type="checkbox" checked="checked" disabled value="True"/>
+                        }
+                        else
+                        {
+                            <input class="checkbox-inline" type="checkbox" value="false"/>
+                        }
+                    </div>
+                </div>
+            }
+            <div class="form-group col-lg-offset-3 col-lg-2">
+                <input type="submit" class="btn btn-default" value="Spara"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+@* Användarbehörighet *@
+<div class="col-lg-4">
+    <div id="userRoleManager" class="tomasos-panel">
+        <h2 class="col-lg-offset-1">Användarbehörighet</h2>
+        <form asp-controller="Admin" asp-action="UpdateUserRole">
+            @foreach (var user in Model.IdentityKunder)
+            {
+                <div class="form-group col-lg-12">
+                    <label class="control-label col-lg-3" asp-for="@user.UserName">@user.UserName</label>
+                    <div class="col-lg-9">
+                        @if (user.Roles.Any(x => x.RoleId == "1"))
+                            {
+                                <label class="radio-inline"><input type="radio" name="@user.UserName">Admin</label>
+                            }
+                            else
+                            {
+                                <label class="radio-inline"><input type="radio" name="@user.UserName">Admin</label>
+                            }
+                        <label class="radio-inline"><input type="radio" name="@user.UserName">Regular</label>
+                        <label class="radio-inline"><input type="radio" name="@user.UserName">Premium</label>
+
+                    </div>
+                </div>
+            }
+            <div class="form-group col-lg-offset-3 col-lg-2">
+                <input type="button" class="btn btn-default" value="Spara"/>
+            </div>
+        </form>
+    </div>
+
+</div>

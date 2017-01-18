@@ -117,7 +117,15 @@ namespace TomasosPizza.Controllers
         [Route("Admin")]
         public IActionResult AdminView()
         {
-            return View();
+             var model = new AdminViewModel
+             {
+                 Matratter = _context.Matratt.ToList(),
+                 Ingredienser = _context.Produkt.ToList(),
+                 Bestallningar = _context.Bestallning.ToList(),
+                 IdentityKunder = _userManager.Users.ToList()
+             };
+            model.Bestallningar = _context.Bestallning.Include(x => x.Kund).ToList();
+            return View(model);
         }
     }
 }

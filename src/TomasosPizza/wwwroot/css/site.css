@@ -9,7 +9,7 @@
 
 .tomasos-panel {
     background-color: #FF8B84; /*#FF8B84;*/
-    /*padding: 10px;*/
+    padding: 10px;
     margin: 5px;
     height: 80%;
     overflow-y: auto;
