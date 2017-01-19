@@ -122,7 +122,7 @@ namespace TomasosPizza.Controllers
                  Matratter = _context.Matratt.ToList(),
                  Ingredienser = _context.Produkt.ToList(),
                  Bestallningar = _context.Bestallning.ToList(),
-                 IdentityKunder = _userManager.Users.ToList()
+                 IdentityKunder = _userManager.Users.Include(x => x.Roles).ToList()
              };
             model.Bestallningar = _context.Bestallning.Include(x => x.Kund).ToList();
             return View(model);

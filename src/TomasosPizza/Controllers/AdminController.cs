@@ -72,19 +72,35 @@ namespace TomasosPizza.Controllers
 
             return RedirectToAction("AdminView", "Navigation");
         }
-        public IActionResult UpdateUserRole(List<IdentityKund> identityUsers)
+        public async Task<IActionResult> UpdateUserRole(List<IdentityKund> identityUsers)
         {
-            var users = _userManager.Users;
             foreach (var idUser in identityUsers)
             {
-                var user = users.SingleOrDefault(x => x.UserName == idUser.UserName);
-
+                var user = _userManager.Users.First(o => o.Id == idUser.Id);
+                // access the UsersRoles table (for the user)
+                await _userManager.GetRolesAsync(user);
+                // clear current roles (ideally just the one held previously, but this is easier)
+                await _userManager.RemoveFromRolesAsync(user, new List<string> {"Administrator", "PremiumUser","RegularUser"});
+                // find the one role checked in the list
+                var newRole = _userManager.GetRolesAsync(user).Result.First();
+                // assign that new role
+                await _userManager.AddToRoleAsync(user, newRole);
             }
             return RedirectToAction("AdminView", "Navigation");   
         }
 
+        [HttpPost]
         public IActionResult UpdateOrderDelivered(List<Bestallning> orders)
         {
+            // todo debug, this looks to simple
+            foreach (var order in orders)
+            {
+                // finn motsvarande i context (de bör mappa, så det vore effektivare, men detta har mindre risk att skriva fel)
+                // skriv över dess levereradvärde till orders dito
+                _context.Bestallning.First(o => o.BestallningId == order.BestallningId).Levererad = order.Levererad;
+            }
+            // save changes
+            _context.SaveChanges();
             return RedirectToAction("AdminView", "Navigation");
             
         }

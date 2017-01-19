@@ -171,7 +171,7 @@ namespace TomasosPizza.Controllers
             var b = new Bestallning
             {
                 KundId = order.Kund.KundId,
-                Levererad = true,
+                Levererad = false,
                 Totalbelopp = order.Totalbelopp,
                 BestallningDatum = order.BestallningDatum,
             };

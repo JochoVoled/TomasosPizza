@@ -81,13 +81,12 @@
 <div class="col-lg-4">
     <div id="orderManager" class="tomasos-panel">
         <h2 class="col-lg-offset-1">Orderhantering</h2>
-        <form asp-controller="Admin" asp-action="UpdateOrderDelivered">
+        <form asp-controller="Admin" asp-action="UpdateOrderDelivered" asp-route-orders="@Model.Bestallningar" method="post"> @*data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#orderManager"*@
             @foreach (var order in Model.Bestallningar)
             {
                 <div class="form-group">
                     <label class="control-label col-lg-8">@order.BestallningDatum.Date av @order.Kund.Namn</label>
                     <div class="col-lg-1">
-                        <!-- todo consider if one-way checkbox is the right call or if unDeliver-ing should be allowed -->
                         @if (order.Levererad)
                         {
                             <input class="checkbox-inline" type="checkbox" checked="checked" disabled value="True"/>
@@ -110,7 +109,7 @@
 <div class="col-lg-4">
     <div id="userRoleManager" class="tomasos-panel">
         <h2 class="col-lg-offset-1">Användarbehörighet</h2>
-        <form asp-controller="Admin" asp-action="UpdateUserRole">
+        <form asp-controller="Admin" asp-action="UpdateUserRole" asp-route="identityUsers" method="post">
             @foreach (var user in Model.IdentityKunder)
             {
                 <div class="form-group col-lg-12">
