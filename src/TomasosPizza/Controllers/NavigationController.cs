@@ -92,21 +92,9 @@ namespace TomasosPizza.Controllers
             return View();
         }
 
-        
-        //public IActionResult UserEdit()
-        //{
-        //    int userId = int.Parse(HttpContext.Session.GetString("User"));   
-        //    Kund user = _context.Kund.First(u => u.KundId == userId);
-
-        //    return View(user);
-        //}
-
         [Route("EditProfile")]
         public async Task<IActionResult> UserEditAsync()
         {
-            //var identity = await _userManager.GetUserAsync(User);
-            //var kund = _context.Kund.SingleOrDefault(x => x.IdentityId == identity.Id.ToString());
-
             var identity = _userManager.GetUserAsync(User).Result;
             var kund = _context.Kund.SingleOrDefault(x => x.AnvandarNamn == identity.UserName);
 
@@ -122,6 +110,7 @@ namespace TomasosPizza.Controllers
                  Matratter = _context.Matratt.ToList(),
                  Ingredienser = _context.Produkt.ToList(),
                  Bestallningar = _context.Bestallning.ToList(),
+                 Typer = _context.MatrattTyp.ToList(),
                  IdentityKunder = _userManager.Users.Include(x => x.Roles).ToList()
              };
             model.Bestallningar = _context.Bestallning.Include(x => x.Kund).ToList();
