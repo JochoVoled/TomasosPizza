@@ -6,6 +6,7 @@
 *@
 
 @using TomasosPizza.Models
+@using TomasosPizza.ViewModels
 @model TomasosPizza.ViewModels.AdminViewModel
 @{
     Matratt editFood = null;
@@ -73,5 +74,8 @@
 
 @* Användarbehörighet *@
 <div class="col-lg-4">
-    @Html.Partial("_userRolesManagerPartial",@Model.IdentityKunder)
+    @Html.Partial("_userRolesManagerPartial", new RolesManagerViewModel
+{
+    IdentityKunds  = Model.IdentityKunder,
+} )
 </div>

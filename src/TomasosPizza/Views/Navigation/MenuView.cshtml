@@ -32,7 +32,6 @@
                             <p>Innehåller @ingredients</p>
                         </td>
                         <td>
-                            @*<span style="float: right"><a asp-controller="Order" asp-action="AddToOrder" asp-route-id="@product.MatrattId"><input type="button" value="Beställ en" /></a></span>*@
                             <span style="float: right"><a asp-controller="Order" asp-action="AddToOrder" asp-route-id="@product.MatrattId" data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#cart"><input type="button" value="Beställ en"/></a></span>
                         </td>
                     </tr>

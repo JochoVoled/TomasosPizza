@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TomasosPizza.IdentityModels;
@@ -71,9 +73,28 @@ namespace TomasosPizza.Controllers
 
             return RedirectToAction("AdminView", "Navigation");
         }
-        [HttpPost]
-        public async Task<IActionResult> UpdateUserRole(List<IdentityKund> identityUsers)
+
+
+        public async Task<IActionResult> SetUserRole(string userName, string newRole)
         {
+            var user = _userManager.Users.First(o => o.UserName == userName);
+            // todo have to find the user's role somehow
+            var roles = await _userManager.GetRolesAsync(user);
+            
+            var result = await _userManager.RemoveFromRolesAsync(user, roles);
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, newRole);
+                await _userManager.UpdateAsync(user);
+            }
+
+            return RedirectToAction("AdminView", "Navigation");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserRole(RolesManagerViewModel model)
+        {
+            var identityUsers = model.IdentityKunds;
             foreach (var idUser in identityUsers)
             {
                 var user = _userManager.Users.First(o => o.Id == idUser.Id);
@@ -89,24 +110,12 @@ namespace TomasosPizza.Controllers
         {
             return RedirectToAction("AdminView", "Navigation");
         }
-
-        [HttpPost]
-        public IActionResult UpdateOrderDelivered(List<Bestallning> orders)
+        public IActionResult SetOrderDelivered(int id)
         {
             // todo debug, this looks too simple
-            foreach (var order in orders)
-            {
-                // finn motsvarande i context (de bör mappa, så det vore effektivare, men detta har mindre risk att skriva fel)
-                // skriv över dess levereradvärde till orders dito
-                _context.Bestallning.First(o => o.BestallningId == order.BestallningId)
-                    .Levererad = order.Levererad;
-            }
-            // save changes
+            _context.Bestallning.First(o => o.BestallningId == id).Levererad = true;
             _context.SaveChanges();
             return RedirectToAction("AdminView", "Navigation");
-            
         }
-
-        
     }
 }
