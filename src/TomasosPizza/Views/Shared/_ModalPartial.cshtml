@@ -6,29 +6,29 @@
             <a class="close" asp-controller="Admin" asp-action="CloseMatratt">&times;</a>
             <h4 class="modal-title">@Model.Title</h4>
         </div>
-        <form asp-controller="Admin" asp-action="SaveMatratt" asp-route-model="@Model" method="post">
+        <form asp-controller="Admin" asp-action="SaveMatratt" asp-route-model="@Model.Matratt" method="post">
             <div class="form-group col-lg-12">
-                <label class="col-lg-3" asp-for="@Model.Matratt.MatrattNamn">Namn</label>
+                <label class="col-lg-3 tomasos-text" asp-for="Matratt.MatrattNamn">Namn*</label>
                 <div class="col-lg-9">
-                    <input type="text" asp-for="@Model.Matratt.MatrattNamn" />
+                    <input type="text" required asp-for="Matratt.MatrattNamn" />
                 </div>
             </div>
             <div class="form-group col-lg-12">
-                <label class="col-lg-3" asp-for="@Model.Matratt.Beskrivning">Beskrivning</label>
+                <label class="col-lg-3" asp-for="Matratt.Beskrivning">Beskrivning</label>
                 <div class="col-lg-9">
-                    <textarea asp-for="@Model.Matratt.Beskrivning"></textarea>
+                    <textarea asp-for="Matratt.Beskrivning">@Model.Matratt.Beskrivning</textarea>
                 </div>
             </div>
             <div class="form-group col-lg-12">
-                <label class="col-lg-3" asp-for="@Model.Matratt.Pris">Pris</label>
+                <label class="col-lg-3 tomasos-text" asp-for="Matratt.Pris">Pris*</label>
                 <div class="col-lg-9">
-                    <input type="number" asp-for="@Model.Matratt.Pris" />
+                    <input type="number" required asp-for="Matratt.Pris" value="@Model.Matratt.Pris" />
                 </div>
             </div>
             <div class="form-group col-lg-12">
-                <label class="col-lg-3" asp-for="@Model.Matratt.MatrattTyp">Kategori</label>
+                <label class="col-lg-3 tomasos-text" asp-for="Matratt.MatrattTyp">Kategori*</label>
                 <div class="col-lg-9">
-                    <select asp-for="@Model.Matratt.MatrattTyp">
+                    <select asp-for="Matratt.MatrattTyp" required>
                         @foreach (var typ in @Model.Typer)
                         {
                             <option value="@typ.MatrattTyp1">@typ.Beskrivning</option>
@@ -36,22 +36,33 @@
                     </select>
                 </div>
             </div>
-            @foreach (var ingredient in Model.Produkter)
+            @Html.Partial("_ModalProductListPartial",@Model)
+            @*<div id="ingredientList">
+                @foreach (var ingredient in Model.Produkter)
             {
-                <div class="form-group col-lg-12">
-                    <label class="control-label col-lg-8">@ingredient.ProduktNamn</label>
-                    <div class="col-lg-1">
-                        @if (@Model.Matratt.MatrattProdukt.Any(x => x.Produkt == ingredient))
-                        {
-                            <input class="checkbox-inline" type="checkbox" checked="checked" value="True" />
-                        }
-                        else
-                        {
-                            <input class="checkbox-inline" type="checkbox" value="false" />
-                        }
+                    <div class="form-group col-lg-12">
+                        <label class="control-label col-lg-8">@ingredient.ProduktNamn</label>
+                        <div class="col-lg-1">
+                            @if (@Model.Matratt.MatrattProdukt.Any(x => x.Produkt == ingredient))
+                            {
+                                <a asp-controller="Admin" asp-action="RemoveProductFromMatratt" asp-route-productId="@ingredient.ProduktId" asp-route-matrattId="@Model.Matratt.MatrattId"
+                                   data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#ingredientList">
+                                    Remove
+                                </a>
+                                <input class="checkbox-inline" type="checkbox" disabled checked value="True" />
+                            }
+                            else
+                            {
+                                <a asp-controller="Admin" asp-action="AddProductToMatratt" asp-route-productId="@ingredient.ProduktId" asp-route-matrattId="@Model.Matratt.MatrattId"
+                                   data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#ingredientList">
+                                    Add
+                                </a>
+                                <input class="checkbox-inline" type="checkbox" disabled value="false" />
+                            }
+                        </div>
                     </div>
-                </div>
-            }
+                }
+            </div>*@
             <div>
                 <a class="btn btn-default" asp-controller="Admin" asp-action="CloseMatratt">Stäng</a>
                 <input type="submit" asp-controller="Admin" asp-action="SaveMatratt" class="btn btn-info" value="OK" />

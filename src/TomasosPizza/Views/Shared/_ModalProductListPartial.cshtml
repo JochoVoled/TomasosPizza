@@ -1,0 +1,28 @@
+﻿@model TomasosPizza.ViewModels.ModalViewModel
+
+<div id="ingredientList">
+    @foreach (var ingredient in Model.Produkter)
+            {
+        <div class="form-group col-lg-12">
+            <label class="control-label col-lg-8">@ingredient.ProduktNamn</label>
+            <div class="col-lg-1">
+                @if (@Model.Matratt.MatrattProdukt.Any(x => x.Produkt == ingredient))
+                {
+                    <a asp-controller="Admin" asp-action="RemoveProductFromMatratt" asp-route-productId="@ingredient.ProduktId" asp-route-matrattId="@Model.Matratt.MatrattId"
+                       data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#ingredientList">
+                        Remove
+                    </a>
+                    <input class="checkbox-inline" type="checkbox" disabled checked value="True" />
+                }
+                else
+                {
+                    <a asp-controller="Admin" asp-action="AddProductToMatratt" asp-route-productId="@ingredient.ProduktId" asp-route-matrattId="@Model.Matratt.MatrattId"
+                       data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#ingredientList">
+                        Add
+                    </a>
+                    <input class="checkbox-inline" type="checkbox" disabled value="false" />
+                }
+            </div>
+        </div>
+    }
+</div>
