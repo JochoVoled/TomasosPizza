@@ -10,9 +10,9 @@
                 <div class="col-lg-9">
                     @if (user.Roles.Any(x => x.RoleId == "1"))
                     {
-                        <label class="radio-inline"><input type="radio" checked="checked" name="@user.UserName">Admin</label>
-                        <label class="radio-inline"><input type="radio" name="@user.UserName">Regular</label>
-                        <label class="radio-inline"><input type="radio" name="@user.UserName">Premium</label>
+                        <label class="radio-inline"><input type="radio" disabled="disabled" checked="checked" name="@user.UserName">Admin</label>
+                        <label class="radio-inline"><input type="radio" disabled="disabled" name="@user.UserName">Regular</label>
+                        <label class="radio-inline"><input type="radio" disabled="disabled" name="@user.UserName">Premium</label>
                     }
                     else if (user.Roles.Any(x => x.RoleId == "2"))
                     {

@@ -98,7 +98,8 @@ namespace TomasosPizza.Controllers
             {
                 // finn motsvarande i context (de bör mappa, så det vore effektivare, men detta har mindre risk att skriva fel)
                 // skriv över dess levereradvärde till orders dito
-                _context.Bestallning.First(o => o.BestallningId == order.BestallningId).Levererad = order.Levererad;
+                _context.Bestallning.First(o => o.BestallningId == order.BestallningId)
+                    .Levererad = order.Levererad;
             }
             // save changes
             _context.SaveChanges();

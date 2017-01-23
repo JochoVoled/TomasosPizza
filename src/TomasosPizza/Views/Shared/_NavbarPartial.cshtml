@@ -27,9 +27,11 @@
                 @* todo Items in If show on login screen, which they should not
                     @if (Context.Session.GetString("User") == null)*@
                 @if (SignInManager.IsSignedIn(User))
+                // alternatively: if (User.Identity.IsAuthenticated)
                 {
                     <li><a asp-area="" asp-controller="User" asp-action="LogOutAsync">Log Out</a></li>
                     <li><a asp-area="" asp-controller="Navigation" asp-action="UserEditAsync">Justera profil</a></li>
+                    
                     if (User.IsInRole("Administrator"))
                     {
                         <li><a asp-area="" asp-controller="Navigation" asp-action="AdminView">Kontrollpanel</a></li>

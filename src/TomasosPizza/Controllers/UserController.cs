@@ -30,14 +30,11 @@ namespace TomasosPizza.Controllers
         public async Task<IActionResult> LogInAsync(Kund user)
         {
             var result = await _signInManager.PasswordSignInAsync(user.AnvandarNamn, user.Losenord, false, false);
-            if (result.Succeeded)
-            {
-                return RedirectToAction("MenuView", "Navigation");
-            }
-            else
-            {
-                return RedirectToAction("LogInView", "Navigation");
-            }
+            return result.Succeeded ?
+                RedirectToAction(User.IsInRole("Administrator") ?
+                    "AdminView" :
+                    "MenuView", "Navigation")
+                : RedirectToAction("LogInView", "Navigation");
         }
 
         #region Session-Based User Manager

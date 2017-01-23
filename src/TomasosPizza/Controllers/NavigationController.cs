@@ -84,6 +84,10 @@ namespace TomasosPizza.Controllers
         [AllowAnonymous]
         public IActionResult LogInView()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction(User.IsInRole("Administrator") ? "AdminView" : "MenuView");
+            }
             return View();
         }
         [AllowAnonymous]
