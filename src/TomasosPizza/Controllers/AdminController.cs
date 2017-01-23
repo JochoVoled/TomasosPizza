@@ -78,7 +78,7 @@ namespace TomasosPizza.Controllers
         public async Task<IActionResult> SetUserRole(string userName, string newRole)
         {
             var user = _userManager.Users.First(o => o.UserName == userName);
-            // todo have to find the user's role somehow
+            // todo I find roles on HQ, but not on Laptop. How do the DBs deffer?
             var roles = await _userManager.GetRolesAsync(user);
             
             var result = await _userManager.RemoveFromRolesAsync(user, roles);
@@ -91,28 +91,12 @@ namespace TomasosPizza.Controllers
             return RedirectToAction("AdminView", "Navigation");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UpdateUserRole(RolesManagerViewModel model)
-        {
-            var identityUsers = model.IdentityKunds;
-            foreach (var idUser in identityUsers)
-            {
-                var user = _userManager.Users.First(o => o.Id == idUser.Id);
-                await _userManager.GetRolesAsync(user);                                                                         // access the UsersRoles table (for the user)
-                await _userManager.RemoveFromRolesAsync(user, new List<string> {"Administrator", "PremiumUser","RegularUser"}); // clear current roles (ideally just the one held previously, but this is easier)
-                var newRole = _userManager.GetRolesAsync(user).Result.First();                                                  // find the one role checked in the list
-                await _userManager.AddToRoleAsync(user, newRole);                                                               // assign that new role
-            }
-            return RedirectToAction("AdminView", "Navigation");
-        }
-
         public IActionResult CloseMatratt()
         {
             return RedirectToAction("AdminView", "Navigation");
         }
         public IActionResult SetOrderDelivered(int id)
         {
-            // todo debug, this looks too simple
             _context.Bestallning.First(o => o.BestallningId == id).Levererad = true;
             _context.SaveChanges();
             return RedirectToAction("AdminView", "Navigation");
