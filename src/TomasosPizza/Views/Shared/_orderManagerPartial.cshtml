@@ -15,6 +15,7 @@
                 }
                 else
                 {
+                    <a asp-controller="Admin" asp-action="RemoveUndeliveredOrder" asp-route-id="@order.BestallningId">Ta bort</a>
                     <a asp-controller="Admin" asp-action="SetOrderDelivered" asp-route-id="@order.BestallningId">Märk Leverera</a>
                     <input class="checkbox-inline" type="checkbox" disabled value="false" />
                 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -61,21 +62,36 @@ namespace TomasosPizza.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveMatratt(ModalViewModel model)
+        public IActionResult SaveMatratt(Matratt option)
         {
-            var option = model.Matratt;
-            // Spara Maträtt/ändringar till databasen
+            // Update the food without any products in mind
             var currentOption = _context.Matratt.FirstOrDefault(x => x.MatrattId == option.MatrattId);
             currentOption.Beskrivning = option.Beskrivning;
             currentOption.Pris = option.Pris;
             currentOption.Beskrivning = option.Beskrivning;
 
-            // todo load session for productList, loop through and add to MatrattProdukt table
+            // If the Matratt ingredients have been changed, update them
+            var serialized = HttpContext.Session.GetString("productList");
+            if (!string.IsNullOrEmpty(serialized))
+            {
+                // Empty MatrattProdukt of all rows for selected Matratt
+                var oldProducts = _context.MatrattProdukt.Where(x => x.MatrattId == option.MatrattId).ToList();
+                _context.MatrattProdukt.RemoveRange(oldProducts);
 
-            //currentOption.MatrattProdukt = model.Matratt.MatrattProdukt;
-            // todo solve data structure above then uncomment below
-            //_context.SaveChanges();
-            //HttpContext.Session.Remove("productList");
+                // Add selected Products to Matratt (thus, hopefully, negating previous removals)
+                var modalModel = JsonConvert.DeserializeObject<ModalViewModel>(serialized);
+                foreach (var product in modalModel.Produkter)
+                {
+                    var newProduct = new MatrattProdukt
+                    {
+                        Matratt = option,
+                        Produkt = product,
+                    };
+                    _context.MatrattProdukt.Add(newProduct);
+                }
+            }
+            _context.SaveChanges();
+            HttpContext.Session.Remove("productList");
 
             return RedirectToAction("AdminView", "Navigation");
         }
@@ -108,26 +124,25 @@ namespace TomasosPizza.Controllers
             _context.SaveChanges();
             return RedirectToAction("AdminView", "Navigation");
         }
+        public IActionResult RemoveUndeliveredOrder(int id)
+        {
+            var order = _context.Bestallning.First(o => o.BestallningId == id);
+            _context.Bestallning.Remove(order);
+            var cascade = _context.BestallningMatratt.Where(x => x.BestallningId == order.BestallningId);
+            _context.RemoveRange(cascade);
+            _context.SaveChanges();
+            return RedirectToAction("AdminView", "Navigation");
+        }
+
 
         public IActionResult AddProductToMatratt(int productId, int matrattId)
         {
-            ModalViewModel model = new ModalViewModel();
+            var model = new List<Produkt>();
             var product = _context.Produkt.First(x => x.ProduktId == productId);
 
-            if (HttpContext.Session.GetString("productList") != null)
-            {
-                var serialized = HttpContext.Session.GetString("productList");
-                model = JsonConvert.DeserializeObject<ModalViewModel>(serialized);
-            }
-            else
-            {
-                model.Matratt = _context.Matratt.First(x => x.MatrattId == matrattId);
-                model.Produkter = new List<Produkt>();
-            }
-            model.Produkter.Add(product);
-
-            var str = JsonConvert.SerializeObject(model);
-            HttpContext.Session.SetString("productList",str);
+            model = LoadOrInitializeModalModel(matrattId, model);
+            model.Add(product);
+            ReserializeProductList(model);
 
             var modalModel = new ModalViewModel
             {
@@ -142,24 +157,12 @@ namespace TomasosPizza.Controllers
 
         public IActionResult RemoveProductFromMatratt(int productId, int matrattId)
         {
-            // todo solve known issue where you remove product already in food.
-            ModalViewModel model = new ModalViewModel();
+            var model = new List<Produkt>();
             var product = _context.Produkt.First(x => x.ProduktId == productId);
 
-            if (HttpContext.Session.GetString("productList") != null)
-            {
-                var serialized = HttpContext.Session.GetString("productList");
-                model = JsonConvert.DeserializeObject<ModalViewModel>(serialized);
-            }
-            else
-            {
-                model.Matratt = _context.Matratt.First(x => x.MatrattId == matrattId);
-                model.Produkter = new List<Produkt>();
-            }
-            model.Produkter.Remove(product);
-
-            var str = JsonConvert.SerializeObject(model);
-            HttpContext.Session.SetString("productList", str);
+            model = LoadOrInitializeModalModel(matrattId, model);
+            model.Remove(product);
+            ReserializeProductList(model);
 
             var modalModel = new ModalViewModel
             {
@@ -170,6 +173,37 @@ namespace TomasosPizza.Controllers
             };
 
             return PartialView("_ModalProductListPartial", modalModel);
+        }
+
+        private void ReserializeProductList(List<Produkt> model)
+        {
+            // todo solve self-referencial loop
+            var str = JsonConvert.SerializeObject(model);
+            HttpContext.Session.SetString("productList", str);
+        }
+
+        private List<Produkt> LoadOrInitializeModalModel(int matrattId, List<Produkt> model)
+        {
+            if (HttpContext.Session.GetString("productList") != null)
+            {
+                var serialized = HttpContext.Session.GetString("productList");
+                model = JsonConvert.DeserializeObject<List<Produkt>>(serialized);
+            }
+            else
+            {
+                var matratt = _context.Matratt.FirstOrDefault(x => x.MatrattId == matrattId);
+                if (matratt == null) return model;
+                
+                // get all products linked to Matratt in MatrattProdukt
+                var relationRows = _context.MatrattProdukt.Where(x => x.MatrattId == matrattId).ToList();
+
+                foreach (MatrattProdukt produkt in relationRows)
+                {
+                    var p = _context.Produkt.Find(produkt.ProduktId);
+                    model.Add(p);
+                }                
+            }
+            return model;
         }
 
 
