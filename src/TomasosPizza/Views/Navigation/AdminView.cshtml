@@ -1,20 +1,9 @@
-﻿@* Tre paneler: Menyhantering, Orderhantering, Användarbehörighet. 4-4-4
-    Menyhantering: Lista av alla Maträtter med Redigera-knapp, samt "Skapa ny"-knapp underst
-        Redigera-knappen öppnar modal med formulär: Textfält för beskrivning, Dropdown för typ, lista med checkbox för ingrediens
-            Listan ifråga ska också kunna lägga till nya produkter
-        Skapa Ny-knappen öppnar samma modal, dock utan förifyllda värden
-*@
-
-@using TomasosPizza.Models
-@using TomasosPizza.ViewModels
-@model TomasosPizza.ViewModels.AdminViewModel
-@{
-    Matratt editFood = null;
-}
+﻿@using TomasosPizza.ViewModels
+@model AdminViewModel
 
 @* Menyhantering *@
 <!-- data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#cart" -->
-<div class="col-lg-4">
+<div class="col-lg-3">
     <div id="menuManager" class="tomasos-panel">
         <h2 class="col-lg-offset-1">Menyhantering</h2>
         @foreach (var dish in Model.Matratter)
@@ -24,7 +13,6 @@
                 <div class="input-group-btn">
                     <a class="btn btn-default" asp-controller="Admin" asp-action="BeginUpdateMatratt" asp-route-id="@dish.MatrattId"
                        data-ajax="True" data-ajax-method="get" data-ajax-mode="replace" data-toggle="modal" data-ajax-update="#MatrattModal">
-                        <!-- Send to its own view: data-ajax-update="#MatrattModal" - (Try to) Send to modal: data-target="#MatrattModal" -->
                         <i class="glyphicon glyphicon-edit"></i>
                     </a>
                 </div>
@@ -36,46 +24,31 @@
                 <span>Ny Maträtt</span>
             </a>
         </div>
-        @*@foreach (var dish in Model.Matratter)
-    {
-        <form asp-controller="Admin" asp-action="BeginUpdateMatratt" asp-route-option="@dish" method="post">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="@dish.MatrattNamn" disabled>
-                <div class="input-group-btn">
-                    <a class="btn btn-default" type="submit" data-ajax="True" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#MatrattModal">
-                        <!-- Button should send DishId to modal -->
-                        <i class="glyphicon glyphicon-edit"></i>
-                    </a>
-                </div>
-            </div>
-        </form>
-    }
-    <form asp-controller="Admin" asp-action="AddNewToMenu">
-        <div class="form-group align-right">
-            <input type="submit" class="btn btn-default" data-toggle="modal" data-target="#AddMatrattModal" value="Ny Maträtt" />
-        </div>
-    </form>*@
+        
     </div>
 </div>
 
-<!-- Ny Maträtt-Modal -->
-@*<div class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div id="MatrattModal" class="modal-content">
-        </div>
+<div class="col-lg-2">
+    <div id="productsManager" class="tomasos-panel">
+        @foreach (var ingredient in @Model.Ingredienser)
+        {
+            <form asp-controller="Admin" asp-action="SetProductName" asp-route-productId="@ingredient.ProduktId" asp-route-newName="@ingredient.ProduktNamn">
+                <input asp-for="@ingredient.ProduktNamn" type="text" value="@ingredient.ProduktNamn" />
+                <input type="submit" value="Uppdatera Namn" />
+            </form>
+        }
     </div>
-</div>*@
+</div>
         
 @* Orderhantering *@
-@* todo load data from PartialView to Controller, so that data can be updated *@
-<div class="col-lg-4">
+<div class="col-lg-3">
     @Html.Partial("_orderManagerPartial",@Model.Bestallningar)
 </div>
 
 @* Användarbehörighet *@
 <div class="col-lg-4">
     @Html.Partial("_userRolesManagerPartial", new RolesManagerViewModel
-{
-    IdentityKunds  = Model.IdentityKunder,
-} )
+    {
+        IdentityKunds  = Model.IdentityKunder,
+    })
 </div>

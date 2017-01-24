@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using TomasosPizza.IdentityModels;
 using TomasosPizza.Models;
@@ -34,11 +31,7 @@ namespace TomasosPizza.Controllers
                 Produkter = _context.Produkt.ToList(),
                 Title = "Redigera maträtt",
             };
-            //model.Title = "Skapa ny maträtt";
-            //model.Matratt = _context.Matratt.FirstOrDefault(x => x.MatrattId == id);
             model.Matratt.MatrattProdukt = _context.MatrattProdukt.Where(x => x.MatrattId == model.Matratt.MatrattId).ToList();
-            //model.Typer = _context.MatrattTyp.ToList();
-            //model.Produkter = _context.Produkt.ToList();
             return View("_ModalPartial", model);
         }
         public IActionResult AddNewToMenu()
@@ -56,14 +49,14 @@ namespace TomasosPizza.Controllers
                 Matratt = option,
                 Typer = _context.MatrattTyp.ToList(),
                 Produkter = _context.Produkt.ToList(),
-            //Produkter = _context.Produkt.Where(order => order.MatrattProdukt.Equals(option.MatrattProdukt)).ToList()
-        };
+            };
             return View("_ModalPartial", model);
         }
 
         [HttpPost]
         public IActionResult SaveMatratt(Matratt option)
         {
+            // todo this method doesn't send input values, either
             // Update the food without any products in mind
             var currentOption = _context.Matratt.FirstOrDefault(x => x.MatrattId == option.MatrattId);
             currentOption.Beskrivning = option.Beskrivning;
@@ -100,7 +93,6 @@ namespace TomasosPizza.Controllers
         public async Task<IActionResult> SetUserRole(string userName, string newRole)
         {
             var user = _userManager.Users.First(o => o.UserName == userName);
-            // todo I find roles on HQ, but not on Laptop. How do the DBs deffer?
             var roles = await _userManager.GetRolesAsync(user);
             
             var result = await _userManager.RemoveFromRolesAsync(user, roles);
@@ -134,7 +126,15 @@ namespace TomasosPizza.Controllers
             return RedirectToAction("AdminView", "Navigation");
         }
 
+        public IActionResult SetProductName(int productId, string newName)
+        {
+            // todo ProduktNamn not sent from view's text input
+            var product = _context.Produkt.First(x => x.ProduktId == productId);
+            product.ProduktNamn = newName;
+            _context.SaveChanges();
 
+            return RedirectToAction("AdminView", "Navigation");
+        }
         public IActionResult AddProductToMatratt(int productId, int matrattId)
         {
             var model = new List<Produkt>();
@@ -186,6 +186,7 @@ namespace TomasosPizza.Controllers
         {
             if (HttpContext.Session.GetString("productList") != null)
             {
+                // todo evaluate if Working as Intended
                 var serialized = HttpContext.Session.GetString("productList");
                 model = JsonConvert.DeserializeObject<List<Produkt>>(serialized);
             }
@@ -205,7 +206,5 @@ namespace TomasosPizza.Controllers
             }
             return model;
         }
-
-
     }
 }

@@ -2,12 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TomasosPizza.IdentityModels;
 using TomasosPizza.Models;
-using TomasosPizza.ViewModels;
 
 namespace TomasosPizza.Controllers
 {
@@ -25,7 +23,6 @@ namespace TomasosPizza.Controllers
             _signInManager = signInManager;
         }
 
-        // todo? sync Kund and IdentityKund, so that current users can log in
         [HttpPost]
         public async Task<IActionResult> LogInAsync(Kund user)
         {
@@ -198,16 +195,8 @@ namespace TomasosPizza.Controllers
         [Authorize]
         public IActionResult AddAdress(Kund updatedUser)
         {
-            //Kund updatedUser = bestallning.Kund;
-            //var identity = _userManager.GetUserAsync(User);
-            //var identity = _userManager.FindByIdAsync();
             var identity = User.Identity.GetHashCode();
-            //var user = _context.Kund.SingleOrDefault(x => x.IdentityId == identity.Id.ToString());
             var user = _context.Kund.SingleOrDefault(x => int.Parse(x.IdentityId) == identity);
-
-
-            //int userId = int.Parse(HttpContext.Session.GetString("User"));
-            //Kund user = _context.Kund.First(u => u.KundId == userId);
 
             // only save to database if all required fields have actual values
             if (string.IsNullOrWhiteSpace(updatedUser.Gatuadress) || string.IsNullOrWhiteSpace(updatedUser.Postort) || string.IsNullOrWhiteSpace(updatedUser.Postnr))
@@ -224,7 +213,6 @@ namespace TomasosPizza.Controllers
                 _context.SaveChanges();
             }
             
-            //return RedirectToAction("OrderView", "Navigation",user);
             return RedirectToAction("CheckOut","Order",false); // I know CheckOut takes two parameters, so this shouldn't work, yet IDE sais it would? Pay attention, and learn something
         }
 
@@ -237,13 +225,5 @@ namespace TomasosPizza.Controllers
         {
             await _userManager.RemoveFromRoleAsync(user, "PremiumUser");
         }
-
-        //public Kund GetOnlineKund()
-        //{
-        //    var identity = _userManager.GetUserAsync(User);
-        //    var kund = _context.Kund.SingleOrDefault(x => x.IdentityId == identity.Id.ToString());
-        //    return kund;
-        //}
-
     }
 }
