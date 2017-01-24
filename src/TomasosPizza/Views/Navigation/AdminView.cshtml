@@ -32,9 +32,10 @@
     <div id="productsManager" class="tomasos-panel">
         @foreach (var ingredient in @Model.Ingredienser)
         {
-            <form asp-controller="Admin" asp-action="SetProductName" asp-route-productId="@ingredient.ProduktId" asp-route-newName="@ingredient.ProduktNamn">
+            @*<form asp-controller="Admin" asp-action="SetProductName" asp-route-productId="@ingredient.ProduktId" asp-route-newName="@ingredient.ProduktNamn">*@
+            <form asp-controller="Admin" asp-action="SetProductName" asp-route-newProduct="@ingredient" method="post">
                 <input asp-for="@ingredient.ProduktNamn" type="text" value="@ingredient.ProduktNamn" />
-                <input type="submit" value="Uppdatera Namn" />
+                <input type="submit" value="Uppdatera" />
             </form>
         }
     </div>
