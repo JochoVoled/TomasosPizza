@@ -6,22 +6,21 @@
         <div class="form-group col-lg-12">
             <label class="control-label col-lg-8">@ingredient.ProduktNamn</label>
             <div class="col-lg-1">
-                @if (@Model.Matratt.MatrattProdukt.Any(x => x.Produkt == ingredient))
-                {
-                    <a asp-controller="Admin" asp-action="RemoveProductFromExistingMatratt" asp-route-productId="@ingredient.ProduktId" asp-route-matrattId="@Model.Matratt.MatrattId">
+                @* Ideally, the model would only send the correct link, but right now it just needs to work
+                    @if (@Model.Matratt.MatrattProdukt.Any(x => x.Produkt == ingredient))
+                {*@
+                    <a asp-controller="Admin" asp-action="RemoveProductFromNewMatratt" asp-route-productId="@ingredient.ProduktId" asp-route-matrattId="@Model.Matratt.MatrattId">
                         @* data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#ingredientList" *@
                         Remove
                     </a>
-                    <input class="checkbox-inline" type="checkbox" disabled checked value="True" />
-                }
+                @*}
                 else
-                {
-                    <a asp-controller="Admin" asp-action="AddProductToExistingMatratt" asp-route-productId="@ingredient.ProduktId" asp-route-matrattId="@Model.Matratt.MatrattId">
+                {*@
+                    <a asp-controller="Admin" asp-action="AddProductToNewMatratt" asp-route-productId="@ingredient.ProduktId" asp-route-matrattId="@Model.Matratt.MatrattId">
                         @* data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#ingredientList" *@
                         Add
                     </a>
-                    <input class="checkbox-inline" type="checkbox" disabled value="false" />
-                }
+                @*}*@
             </div>
         </div>
     }

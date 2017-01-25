@@ -22,18 +22,7 @@ namespace TomasosPizza.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult BeginUpdateMatratt(int id)
-        {
-            var model = new ModalViewModel
-            {
-                Matratt = _context.Matratt.FirstOrDefault(x => x.MatrattId == id),
-                Typer = _context.MatrattTyp.ToList(),
-                Produkter = _context.Produkt.ToList(),
-                Title = "Redigera maträtt",
-            };
-            model.Matratt.MatrattProdukt = _context.MatrattProdukt.Where(x => x.MatrattId == model.Matratt.MatrattId).ToList();
-            return View("_ModalPartial", model);
-        }
+        #region NewMatratt
         public IActionResult AddNewToMenu()
         {
             var option = new Matratt
@@ -50,66 +39,168 @@ namespace TomasosPizza.Controllers
                 Typer = _context.MatrattTyp.ToList(),
                 Produkter = _context.Produkt.ToList(),
             };
-            return View("_ModalPartial", model);
+            return View("NewMatrattView", model);
+        }
+        private void ReserializeProductList(List<Produkt> model)
+        {
+
+            var str = JsonConvert.SerializeObject(model);
+            HttpContext.Session.SetString("productList", str);
         }
 
-        [HttpPost]
-        public IActionResult SaveMatratt(Matratt option)
+        private List<Produkt> LoadOrInitializeProductList(int productId, List<Produkt> model)
         {
-            // todo this method doesn't send input values, either
-            // Update the food without any products in mind
-            var currentOption = _context.Matratt.FirstOrDefault(x => x.MatrattId == option.MatrattId);
-            currentOption.Beskrivning = option.Beskrivning;
-            currentOption.Pris = option.Pris;
-            currentOption.Beskrivning = option.Beskrivning;
+            if (HttpContext.Session.GetString("productList") != null)
+            {
+                // todo evaluate if Working as Intended
+                var serialized = HttpContext.Session.GetString("productList");
+                model = JsonConvert.DeserializeObject<List<Produkt>>(serialized);
+            }
+            return model;
+        }
+        [HttpPost]
+        public IActionResult AddMatratt(string newName, string newDesc, int newPrice, string newCat)
+        {
+            var newMatratt = new Matratt
+            {
+                MatrattNamn = newName,
+                Beskrivning = newDesc,
+                Pris = newPrice,
+                MatrattTyp = int.Parse(newCat)
+            };
+            _context.Matratt.Add(newMatratt);
+            _context.SaveChanges();
+            var currentOption = _context.Matratt.OrderByDescending(x => x.MatrattId).FirstOrDefault();
 
-            // If the Matratt ingredients have been changed, update them
+            // Only add Product-Matratt relations if the Matratt ingredients have been set
             var serialized = HttpContext.Session.GetString("productList");
             if (!string.IsNullOrEmpty(serialized))
             {
-                // Empty MatrattProdukt of all rows for selected Matratt
-                var oldProducts = _context.MatrattProdukt.Where(x => x.MatrattId == option.MatrattId).ToList();
-                _context.MatrattProdukt.RemoveRange(oldProducts);
-
-                // Add selected Products to Matratt (thus, hopefully, negating previous removals)
-                var modalModel = JsonConvert.DeserializeObject<ModalViewModel>(serialized);
-                foreach (var product in modalModel.Produkter)
+                // Add selected Products to new Matratt
+                var modalModel = JsonConvert.DeserializeObject<List<Produkt>>(serialized);
+                foreach (var product in modalModel)
                 {
                     var newProduct = new MatrattProdukt
                     {
-                        Matratt = option,
-                        Produkt = product,
+                        MatrattId = currentOption.MatrattId,
+                        ProduktId = product.ProduktId,
                     };
                     _context.MatrattProdukt.Add(newProduct);
                 }
             }
+
             _context.SaveChanges();
             HttpContext.Session.Remove("productList");
 
             return RedirectToAction("AdminView", "Navigation");
         }
-
-
-        public async Task<IActionResult> SetUserRole(string userName, string newRole)
+        public IActionResult AddProductToNewMatratt(int productId)
         {
-            var user = _userManager.Users.First(o => o.UserName == userName);
-            var roles = await _userManager.GetRolesAsync(user);
-            
-            var result = await _userManager.RemoveFromRolesAsync(user, roles);
-            if (result.Succeeded)
+            var model = new List<Produkt>();
+
+            model = LoadOrInitializeProductList(productId, model);
+            // I figure a user may buttonmash the 'Add' link due to lacking feedback
+            if (model.All(x => x.ProduktId != productId))
             {
-                await _userManager.AddToRoleAsync(user, newRole);
-                await _userManager.UpdateAsync(user);
+                model.Add(_context.Produkt.First(x => x.ProduktId == productId));
+            }
+            ReserializeProductList(model);
+
+            return RedirectToAction("AddNewToMenu");
+        }
+        public IActionResult RemoveProductFromNewMatratt(int productId)
+        {
+            var model = new List<Produkt>();
+
+            model = LoadOrInitializeProductList(productId, model);
+            if (model.Any(x => x.ProduktId == productId))
+            {
+                model.Remove(_context.Produkt.First(x => x.ProduktId == productId));
+            }
+            ReserializeProductList(model);
+
+            return RedirectToAction("AddNewToMenu");
+        }
+        #endregion
+        #region ExistingMatratt
+        public IActionResult BeginUpdateMatratt(int id)
+        {
+            var matratt = _context.Matratt.FirstOrDefault(x => x.MatrattId == id);
+
+            var model = new ModalViewModel
+            {
+                Matratt = matratt,
+                Typer = _context.MatrattTyp.ToList(),
+                Produkter = _context.Produkt.ToList(),
+                Title = "Redigera maträtt",
+            };
+            model.Matratt.MatrattProdukt = _context.MatrattProdukt.Where(x => x.MatrattId == matratt.MatrattId).ToList();
+            return View("UpdateMatrattView", model);
+        }
+        public IActionResult UpdateMatratt(int id, string newName, string newDesc, int newPrice, string newCat)
+        {
+            var currentOption = _context.Matratt.FirstOrDefault(x => x.MatrattId == id);
+            // todo evaluate both adding new and editing existing
+
+            // redigera befintlig
+            currentOption.MatrattNamn = newName;
+            currentOption.Beskrivning = newDesc;
+            currentOption.Pris = newPrice;
+            currentOption.MatrattTyp = _context.MatrattTyp.First(x => x.MatrattTyp1 == int.Parse(newCat)).MatrattTyp1;
+
+            _context.SaveChanges();
+
+            return RedirectToAction("AdminView", "Navigation");
+        }
+        public IActionResult AddProductToExistingMatratt(int productId, int matrattId)
+        {
+            // if the Interface sends the wrong data, check to prevent double links
+            if (!_context.MatrattProdukt.Any(x => x.ProduktId == productId && x.MatrattId == matrattId))
+            {
+                var matrattProdukt = new MatrattProdukt
+                {
+                    MatrattId = matrattId,
+                    ProduktId = productId
+                };
+                _context.MatrattProdukt.Add(matrattProdukt);
+                _context.SaveChanges();
             }
 
-            return RedirectToAction("AdminView", "Navigation");
+            return RedirectToAction("BeginUpdateMatratt", new { id = matrattId});
         }
-
-        public IActionResult CloseMatratt()
+        public IActionResult RemoveProductFromExistingMatratt(int productId, int matrattId)
         {
-            HttpContext.Session.Remove("productList");
+            var matrattProdukt =
+                _context.MatrattProdukt.First(x => x.ProduktId == productId && x.MatrattId == matrattId);
+            _context.MatrattProdukt.Remove(matrattProdukt);
+            _context.SaveChanges();
+
+            return RedirectToAction("BeginUpdateMatratt", new { id = matrattId });
+        }
+        #endregion
+
+        #region ProductManagement
+
+        public IActionResult SetProductName(int id, string newName)
+        {
+            var product = _context.Produkt.First(x => x.ProduktId == id);
+            product.ProduktNamn = newName;
+            _context.SaveChanges();
+
             return RedirectToAction("AdminView", "Navigation");
         }
+        public IActionResult NewProduct(string newProductName)
+        {
+            var product = new Produkt
+            {
+                ProduktNamn = newProductName
+            };
+            _context.Produkt.Add(product);
+            _context.SaveChanges();
+            return RedirectToAction("AdminView", "Navigation");
+        }
+        #endregion
+        #region OrderManagement
         public IActionResult SetOrderDelivered(int id)
         {
             _context.Bestallning.First(o => o.BestallningId == id).Levererad = true;
@@ -125,87 +216,27 @@ namespace TomasosPizza.Controllers
             _context.SaveChanges();
             return RedirectToAction("AdminView", "Navigation");
         }
-
-
-        public IActionResult SetProductName(int id, string newName)
+        #endregion
+        #region UserManagement
+        public async Task<IActionResult> SetUserRole(string userName, string newRole)
         {
-            var product = _context.Produkt.First(x => x.ProduktId == id);
-            product.ProduktNamn = newName;
-            _context.SaveChanges();
+            var user = _userManager.Users.First(o => o.UserName == userName);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var result = await _userManager.RemoveFromRolesAsync(user, roles);
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, newRole);
+                await _userManager.UpdateAsync(user);
+            }
 
             return RedirectToAction("AdminView", "Navigation");
         }
-
-    public IActionResult AddProductToMatratt(int productId, int matrattId)
+        #endregion
+        public IActionResult CloseMatratt()
         {
-            var model = new List<Produkt>();
-            var product = _context.Produkt.First(x => x.ProduktId == productId);
-
-            model = LoadOrInitializeModalModel(matrattId, model);
-            model.Add(product);
-            ReserializeProductList(model);
-
-            var modalModel = new ModalViewModel
-            {
-                Matratt = _context.Matratt.FirstOrDefault(x => x.MatrattId == matrattId),
-                //Typer = _context.MatrattTyp.ToList(),
-                Produkter = _context.Produkt.ToList(),
-                //Title = "",
-            };
-
-            return PartialView("_ModalProductListPartial",modalModel);
-        }
-
-        public IActionResult RemoveProductFromMatratt(int productId, int matrattId)
-        {
-            var model = new List<Produkt>();
-            var product = _context.Produkt.First(x => x.ProduktId == productId);
-
-            model = LoadOrInitializeModalModel(matrattId, model);
-            model.Remove(product);
-            ReserializeProductList(model);
-
-            var modalModel = new ModalViewModel
-            {
-                Matratt = _context.Matratt.FirstOrDefault(x => x.MatrattId == matrattId),
-                //Typer = _context.MatrattTyp.ToList(),
-                Produkter = _context.Produkt.ToList(),
-                //Title = "Redigera maträtt",
-            };
-
-            return PartialView("_ModalProductListPartial", modalModel);
-        }
-
-        private void ReserializeProductList(List<Produkt> model)
-        {
-            // todo solve self-referencial loop
-            var str = JsonConvert.SerializeObject(model);
-            HttpContext.Session.SetString("productList", str);
-        }
-
-        private List<Produkt> LoadOrInitializeModalModel(int matrattId, List<Produkt> model)
-        {
-            if (HttpContext.Session.GetString("productList") != null)
-            {
-                // todo evaluate if Working as Intended
-                var serialized = HttpContext.Session.GetString("productList");
-                model = JsonConvert.DeserializeObject<List<Produkt>>(serialized);
-            }
-            else
-            {
-                var matratt = _context.Matratt.FirstOrDefault(x => x.MatrattId == matrattId);
-                if (matratt == null) return model;
-                
-                // get all products linked to Matratt in MatrattProdukt
-                var relationRows = _context.MatrattProdukt.Where(x => x.MatrattId == matrattId).ToList();
-
-                foreach (MatrattProdukt produkt in relationRows)
-                {
-                    var p = _context.Produkt.Find(produkt.ProduktId);
-                    model.Add(p);
-                }                
-            }
-            return model;
+            HttpContext.Session.Remove("productList");
+            return RedirectToAction("AdminView", "Navigation");
         }
     }
 }

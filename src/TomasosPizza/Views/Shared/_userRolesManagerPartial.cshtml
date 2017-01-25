@@ -2,7 +2,6 @@
 
 <div id="userRoleManager" class="tomasos-panel">
     <h2 class="col-lg-offset-1">Användarbehörighet</h2>
-    @*<form asp-controller="Admin" asp-action="UpdateUserRole" asp-route-model="@Model" method="post">*@ @* asp-route-identityUsers="@Model" *@
         @foreach (var user in Model.IdentityKunds)
         {
             <div class="form-group col-lg-12">
@@ -10,20 +9,18 @@
                 <div class="col-lg-9">
                     @if (user.Roles.Any(x => x.RoleId == "1"))
                     {
-                        <span>Admin</span> <!-- <input type="radio" disabled value="Administrator" checked="checked" name="@user.UserName">-->
-                        <a asp-controller="Admin" asp-action="SetUserRole" asp-route-userName="@user" asp-route-newRole="RegularUser">Regular</a> <!--<input type="radio" disabled value="RegularUser" name="user.UserName">-->
-                        <a asp-controller="Admin" asp-action="SetUserRole" asp-route-userName="@user" asp-route-newRole="PremiumUser">Premium</a> <!--<input type="radio" disabled value="PremiumUser" name="user.UserName">-->
+                        <span>Admin</span>
+                        <a asp-controller="Admin" asp-action="SetUserRole" asp-route-userName="@user" asp-route-newRole="RegularUser">Regular</a>
+                        <a asp-controller="Admin" asp-action="SetUserRole" asp-route-userName="@user" asp-route-newRole="PremiumUser">Premium</a>
                     }
                     else if (user.Roles.Any(x => x.RoleId == "2")) 
                     {
-                        <!-- On Laptop, 2 is Regular - same on HQ? -->
                         <a asp-controller="Admin" asp-action="SetUserRole" asp-route-userName="@user" asp-route-newRole="Administrator">Admin</a>
                         <span>Regular</span>
                         <a asp-controller="Admin" asp-action="SetUserRole" asp-route-userName="@user" asp-route-newRole="PremiumUser">Premium</a>
                     }
                     else if (user.Roles.Any(x => x.RoleId == "3"))
                     {
-                        <!-- On Laptop, 3 is Premium - same on HQ? -->
                         <a asp-controller="Admin" asp-action="SetUserRole" asp-route-userName="@user" asp-route-newRole="Administrator">Admin</a>
                         <a asp-controller="Admin" asp-action="SetUserRole" asp-route-userName="@user" asp-route-newRole="RegularUser">Regular</a>
                         <span>Premium</span>

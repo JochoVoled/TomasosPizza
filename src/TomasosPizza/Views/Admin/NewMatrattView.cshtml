@@ -1,0 +1,76 @@
+﻿@model TomasosPizza.ViewModels.ModalViewModel
+@{
+    var newName = "";
+    var newDesc = "";
+    var newPrice = 0;
+    var newCat = "";
+}
+<div class="col-lg-4 col-lg-offset-4">
+    <div class="tomasos-panel">
+        <div>
+            <a class="close" asp-controller="Admin" asp-action="CloseMatratt">&times;</a>
+            <h4 class="modal-title">@Model.Title</h4>
+        </div>
+        <form asp-controller="Admin" asp-action="AddMatratt" asp-route-id="@Model.Matratt.MatrattId" asp-route-newName="@newName" asp-route-newDesc="@newDesc" asp-route-newPrice="@newPrice" asp-route-newCat="@newCat">
+            <div class="form-group col-lg-12">
+                <label class="col-lg-3 tomasos-text" asp-for="@Model.Matratt.MatrattNamn">Namn*</label>
+                <div class="col-lg-9">
+                    <input type="text" required asp-for="@newName" value="@Model.Matratt.MatrattNamn" />
+                </div>
+            </div>
+            <div class="form-group col-lg-12">
+                <label class="col-lg-3" asp-for="@Model.Matratt.Beskrivning">Beskrivning</label>
+                <div class="col-lg-9">
+                    <textarea asp-for="@newDesc">@Model.Matratt.Beskrivning</textarea>
+                </div>
+            </div>
+            <div class="form-group col-lg-12">
+                <label class="col-lg-3 tomasos-text" asp-for="@Model.Matratt.Pris">Pris*</label>
+                <div class="col-lg-9">
+                    <input type="number" required asp-for="@newPrice" value="@Model.Matratt.Pris" />
+                </div>
+            </div>
+            <div class="form-group col-lg-12">
+                <label class="col-lg-3 tomasos-text" asp-for="@Model.Matratt.MatrattTyp">Kategori*</label>
+                <div class="col-lg-9">
+                    <select asp-for="@newCat" required>
+                        @foreach (var typ in @Model.Typer)
+                        {
+                            <option value="@typ.MatrattTyp1">@typ.Beskrivning</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div id="ingredientList">
+                @foreach (var ingredient in Model.Produkter)
+            {
+                    <div class="form-group col-lg-12">
+                        <label class="control-label col-lg-8">@ingredient.ProduktNamn</label>
+                        <div class="col-lg-1">
+                            @* Ideally, the model would only send the correct link, but right now it just needs to work
+                            @if (@Model.Matratt.MatrattProdukt.Any(x => x.Produkt == ingredient))
+                        {*@
+                            <a asp-controller="Admin" asp-action="RemoveProductFromNewMatratt" asp-route-productId="@ingredient.ProduktId">
+                                @* data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#ingredientList" *@
+                                Remove
+                            </a>
+                            @*}
+                        else
+                        {*@
+                            <a asp-controller="Admin" asp-action="AddProductToNewMatratt" asp-route-productId="@ingredient.ProduktId">
+                                @* data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#ingredientList" *@
+                                Add
+                            </a>
+                            @*}*@
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div>
+                <a class="btn btn-default" asp-controller="Admin" asp-action="CloseMatratt">Stäng</a>
+                <input type="submit" class="btn btn-info" value="OK" />
+            </div>
+        </form>
+    </div>
+</div>

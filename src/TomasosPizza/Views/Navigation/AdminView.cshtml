@@ -2,9 +2,9 @@
 @model AdminViewModel
 @{
     var newName = "";
+    var newProductName = "";
 }
 @* Menyhantering *@
-<!-- data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#cart" -->
 <div class="col-lg-3">
     <div id="menuManager" class="tomasos-panel">
         <h2 class="col-lg-offset-1">Menyhantering</h2>
@@ -30,16 +30,20 @@
     </div>
 </div>
 
-<div class="col-lg-2">
+<div class="col-lg-3">
     <div id="productsManager" class="tomasos-panel">
+        <h2 class="col-lg-offset-1">Ingredienser</h2>
         @foreach (var ingredient in @Model.Ingredienser)
         {
-            @*<form asp-controller="Admin" asp-action="SetProductName" asp-route-productId="@ingredient.ProduktId" asp-route-newName="@ingredient.ProduktNamn">*@
             <form asp-controller="Admin" asp-action="SetProductName" asp-route-id="@ingredient.ProduktId" asp-route-newName="@newName">
-                <input asp-for="@newName" type="text" value="@ingredient.ProduktNamn" />
-                <input type="submit" value="Uppdatera" />
+                <input asp-for="@newName" type="text" value="@ingredient.ProduktNamn"/>
+                <input type="submit" value="Uppdatera"/>
             </form>
         }
+        <form asp-controller="Admin" asp-action="NewProduct" asp-route-newProductName="@newProductName">
+            <input asp-for="@newProductName" type="text"/>
+            <input type="submit" value="Skapa ny"/>
+        </form>
     </div>
 </div>
         
@@ -49,7 +53,7 @@
 </div>
 
 @* Användarbehörighet *@
-<div class="col-lg-4">
+<div class="col-lg-3">
     @Html.Partial("_userRolesManagerPartial", new RolesManagerViewModel
     {
         IdentityKunds  = Model.IdentityKunder,
