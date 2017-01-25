@@ -21,25 +21,10 @@
                     <input class="btn btn-default" type="submit" Value="Logga in"/>
                 </div>
             </div>
-            @*<table>
-                <tr>
-                    <td><label class="tomasos-text" asp-for="AnvandarNamn">Användarnamn</label></td>
-                    <td><input type="text" asp-for="AnvandarNamn" required/></td>
-                </tr>
-                <tr>
-                    <td><label class="tomasos-text" asp-for="Losenord">Lösenord</label></td>
-                    <td><input type="password" asp-for="Losenord" maxlength="30" required/></td>
-                </tr>
-                <tr>
-                    <td colspan="2"><input type="submit" Value="Logga in"/></td>
-                </tr>
-            </table>*@
         </form>
     </div>
     <div class="col-md-1"></div>
     <div class="col-md-5 tomasos-panel">
-        @* todo? May have to be ViewComponent, as it uses another model entirely. If so, look up how to do one*@
-        @* todo WISHLIST: Would like these to use Bootstrap tabs, as it would look cleaner and focus user flow *@
         @Html.Partial("RegisterView");
     </div>
 </div>

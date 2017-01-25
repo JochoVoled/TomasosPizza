@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using TomasosPizza.ViewModels;
 
 namespace TomasosPizza.Controllers
 {
+    //[Authorize("Administrator")]
     public class AdminController : Controller
     {
         private readonly TomasosContext _context;
@@ -48,11 +50,10 @@ namespace TomasosPizza.Controllers
             HttpContext.Session.SetString("productList", str);
         }
 
-        private List<Produkt> LoadOrInitializeProductList(int productId, List<Produkt> model)
+        private List<Produkt> LoadOrInitializeProductList(List<Produkt> model)
         {
             if (HttpContext.Session.GetString("productList") != null)
             {
-                // todo evaluate if Working as Intended
                 var serialized = HttpContext.Session.GetString("productList");
                 model = JsonConvert.DeserializeObject<List<Produkt>>(serialized);
             }
@@ -98,7 +99,7 @@ namespace TomasosPizza.Controllers
         {
             var model = new List<Produkt>();
 
-            model = LoadOrInitializeProductList(productId, model);
+            model = LoadOrInitializeProductList(model);
             // I figure a user may buttonmash the 'Add' link due to lacking feedback
             if (model.All(x => x.ProduktId != productId))
             {
@@ -112,7 +113,7 @@ namespace TomasosPizza.Controllers
         {
             var model = new List<Produkt>();
 
-            model = LoadOrInitializeProductList(productId, model);
+            model = LoadOrInitializeProductList(model);
             if (model.Any(x => x.ProduktId == productId))
             {
                 model.Remove(_context.Produkt.First(x => x.ProduktId == productId));
@@ -140,7 +141,6 @@ namespace TomasosPizza.Controllers
         public IActionResult UpdateMatratt(int id, string newName, string newDesc, int newPrice, string newCat)
         {
             var currentOption = _context.Matratt.FirstOrDefault(x => x.MatrattId == id);
-            // todo evaluate both adding new and editing existing
 
             // redigera befintlig
             currentOption.MatrattNamn = newName;

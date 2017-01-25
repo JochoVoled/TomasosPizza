@@ -24,6 +24,7 @@ namespace TomasosPizza.Controllers
         }
 
         [HttpPost]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> LogInAsync(Kund user)
         {
             var result = await _signInManager.PasswordSignInAsync(user.AnvandarNamn, user.Losenord, false, false);
@@ -93,6 +94,7 @@ namespace TomasosPizza.Controllers
             return RedirectToAction("LogInView", "Navigation");
         }
 
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateUserAsync(Kund user,string confirm)
         {
             if (_context.Kund.Any(u => u.AnvandarNamn == user.AnvandarNamn))
@@ -216,14 +218,14 @@ namespace TomasosPizza.Controllers
             return RedirectToAction("CheckOut","Order",false); // I know CheckOut takes two parameters, so this shouldn't work, yet IDE sais it would? Pay attention, and learn something
         }
 
-        public async void PromoteUser(IdentityKund user)
-        {
-            await _userManager.AddToRoleAsync(user, "PremiumUser");
-        }
+        //public async void PromoteUser(IdentityKund user)
+        //{
+        //    await _userManager.AddToRoleAsync(user, "PremiumUser");
+        //}
 
-        public async void Demote(IdentityKund user)
-        {
-            await _userManager.RemoveFromRoleAsync(user, "PremiumUser");
-        }
+        //public async void Demote(IdentityKund user)
+        //{
+        //    await _userManager.RemoveFromRoleAsync(user, "PremiumUser");
+        //}
     }
 }
