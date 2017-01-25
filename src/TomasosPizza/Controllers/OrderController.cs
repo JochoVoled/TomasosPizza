@@ -191,6 +191,8 @@ namespace TomasosPizza.Controllers
                 user.Poang += 10;
             }
             _context.SaveChanges();
+            HttpContext.Session.Remove("FinalOrder");
+            HttpContext.Session.Remove("Order");
             return RedirectToAction("ThankYou", "Navigation");
         }
     }

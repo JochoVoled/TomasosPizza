@@ -6,8 +6,8 @@
 }
 
 <div style="width: 100%" id="cart">
-    <h1>Din beställning</h1>
-    <div class="tomasos-panel col-lg-8">
+    <div class="tomasos-panel">
+        <h1>Din beställning</h1>
         <table class="table-responsive" style="width: 100%">
             @foreach (var rad in @Model.Order)
             {
@@ -20,23 +20,22 @@
                         <span style="float: right">@rad.Antal * @rad.Matratt.Pris :-</span>
                     </td>
                     <td>
-                        <span style="float: right"><a asp-controller="Order" asp-action="RemoveFromOrder" asp-route-id="@rad.MatrattId" data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#cart"><input type="button" value="Ta bort en" /></a></span>
+                        <span style="float: right"><a asp-controller="Order" asp-action="RemoveFromOrder" asp-route-id="@rad.MatrattId" data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#cart"><input type="button" value="Ta bort en"/></a></span>
                     </td>
                 </tr>
             }
         </table>
 
-        <br />
+        <br/>
         @if (@Model.Order.Count > 0)
         {
-            <br />
+            <br/>
             <span class="tomasos-text">Pris: @Model.Order.Sum(p => p.Matratt.Pris * p.Antal) :-</span>
-            <span style="float: right"><a asp-controller="Order" asp-action="PrepareOrder" asp-route-order="@Model.Order" data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#result"><input class="btn-success" type="button" value="Lägg beställningen" /></a></span>
+            <span style="float: right"><a asp-controller="Order" asp-action="PrepareOrder" asp-route-order="@Model.Order" data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#cart"><input class="btn-success" type="button" value="Lägg beställningen"/></a></span>
         }
         else
         {
-            <p>Din beställning är tom. Beställ något från menyn för att fylla på din beställning.</p>
+            <p>Beställ något från menyn för att fylla på din beställning.</p>
         }
     </div>
-    <div class="tomasos-panel col-lg-3" id="result"></div>
 </div>
