@@ -1,6 +1,8 @@
 ﻿@using TomasosPizza.ViewModels
 @model AdminViewModel
-
+@{
+    var newName = "";
+}
 @* Menyhantering *@
 <!-- data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#cart" -->
 <div class="col-lg-3">
@@ -33,8 +35,8 @@
         @foreach (var ingredient in @Model.Ingredienser)
         {
             @*<form asp-controller="Admin" asp-action="SetProductName" asp-route-productId="@ingredient.ProduktId" asp-route-newName="@ingredient.ProduktNamn">*@
-            <form asp-controller="Admin" asp-action="SetProductName" asp-route-newProduct="@ingredient" method="post">
-                <input asp-for="@ingredient.ProduktNamn" type="text" value="@ingredient.ProduktNamn" />
+            <form asp-controller="Admin" asp-action="SetProductName" asp-route-id="@ingredient.ProduktId" asp-route-newName="@newName">
+                <input asp-for="@newName" type="text" value="@ingredient.ProduktNamn" />
                 <input type="submit" value="Uppdatera" />
             </form>
         }

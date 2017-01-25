@@ -126,27 +126,16 @@ namespace TomasosPizza.Controllers
             return RedirectToAction("AdminView", "Navigation");
         }
 
-        
-        public IActionResult SetProductName(int productId, string newName)
+
+        public IActionResult SetProductName(int id, string newName)
         {
-            // todo ProduktNamn not sent from view's text input
-            var product = _context.Produkt.First(x => x.ProduktId == productId);
+            var product = _context.Produkt.First(x => x.ProduktId == id);
             product.ProduktNamn = newName;
             _context.SaveChanges();
 
             return RedirectToAction("AdminView", "Navigation");
         }
 
-        [HttpPost]
-        public IActionResult SetProductName(Produkt newProduct)
-        {
-            // todo ProduktNamn not sent from view's text input
-            var product = _context.Produkt.First(x => x.ProduktId == newProduct.ProduktId);
-            product.ProduktNamn = newProduct.ProduktNamn;
-            _context.SaveChanges();
-
-            return RedirectToAction("AdminView", "Navigation");
-    }
     public IActionResult AddProductToMatratt(int productId, int matrattId)
         {
             var model = new List<Produkt>();
