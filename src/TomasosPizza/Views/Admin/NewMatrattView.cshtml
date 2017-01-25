@@ -15,19 +15,19 @@
             <div class="form-group col-lg-12">
                 <label class="col-lg-3 tomasos-text" asp-for="@Model.Matratt.MatrattNamn">Namn*</label>
                 <div class="col-lg-9">
-                    <input type="text" required asp-for="@newName" value="@Model.Matratt.MatrattNamn" />
+                    <input type="text" maxlength="50" required asp-for="@newName" value="@Model.Matratt.MatrattNamn" />
                 </div>
             </div>
             <div class="form-group col-lg-12">
                 <label class="col-lg-3" asp-for="@Model.Matratt.Beskrivning">Beskrivning</label>
                 <div class="col-lg-9">
-                    <textarea asp-for="@newDesc">@Model.Matratt.Beskrivning</textarea>
+                    <textarea maxlength="200" asp-for="@newDesc">@Model.Matratt.Beskrivning</textarea>
                 </div>
             </div>
             <div class="form-group col-lg-12">
                 <label class="col-lg-3 tomasos-text" asp-for="@Model.Matratt.Pris">Pris*</label>
                 <div class="col-lg-9">
-                    <input type="number" required asp-for="@newPrice" value="@Model.Matratt.Pris" />
+                    <input type="number" max="2147483647" required asp-for="@newPrice" value="@Model.Matratt.Pris" />
                 </div>
             </div>
             <div class="form-group col-lg-12">
@@ -48,17 +48,15 @@
                         <label class="control-label col-lg-8">@ingredient.ProduktNamn</label>
                         <div class="col-lg-1">
                             @* Ideally, the model would only send the correct link, but right now it just needs to work
-                            @if (@Model.Matratt.MatrattProdukt.Any(x => x.Produkt == ingredient))
+                            
                         {*@
                             <a asp-controller="Admin" asp-action="RemoveProductFromNewMatratt" asp-route-productId="@ingredient.ProduktId">
-                                @* data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#ingredientList" *@
                                 Remove
                             </a>
                             @*}
                         else
                         {*@
                             <a asp-controller="Admin" asp-action="AddProductToNewMatratt" asp-route-productId="@ingredient.ProduktId">
-                                @* data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#ingredientList" *@
                                 Add
                             </a>
                             @*}*@
