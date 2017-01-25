@@ -9,7 +9,6 @@
                 @if (@Model.Matratt.MatrattProdukt.Any(x => x.Produkt == ingredient))
                 {
                     <a asp-controller="Admin" asp-action="RemoveProductFromExistingMatratt" asp-route-productId="@ingredient.ProduktId" asp-route-matrattId="@Model.Matratt.MatrattId">
-                        @* data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#ingredientList" *@
                         Remove
                     </a>
                     <input class="checkbox-inline" type="checkbox" disabled checked value="True" />
@@ -17,7 +16,6 @@
                 else
                 {
                     <a asp-controller="Admin" asp-action="AddProductToExistingMatratt" asp-route-productId="@ingredient.ProduktId" asp-route-matrattId="@Model.Matratt.MatrattId">
-                        @* data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#ingredientList" *@
                         Add
                     </a>
                     <input class="checkbox-inline" type="checkbox" disabled value="false" />

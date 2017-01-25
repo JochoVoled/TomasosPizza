@@ -62,6 +62,9 @@ namespace TomasosPizza.Controllers
                 string str = HttpContext.Session.GetString("Order");
                 model.Order = JsonConvert.DeserializeObject<List<BestallningMatratt>>(str);
             }
+            var identity = _userManager.GetUserAsync(User).Result;
+            model.Kund = _context.Kund.SingleOrDefault(x => x.AnvandarNamn == identity.UserName);
+
             return PartialView("_CartPartial",model);
         }
 

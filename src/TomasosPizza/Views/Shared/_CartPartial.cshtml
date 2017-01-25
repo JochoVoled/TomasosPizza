@@ -2,7 +2,8 @@
 @model TomasosPizza.ViewModels.MenuViewModel
 
 @{
-    string ingredients = "";
+    decimal multiplier = 1m;
+    int discount = 0;
 }
 
 <div style="width: 100%" id="cart">
@@ -30,7 +31,26 @@
         @if (@Model.Order.Count > 0)
         {
             <br/>
-            <span class="tomasos-text">Pris: @Model.Order.Sum(p => p.Matratt.Pris * p.Antal) :-</span>
+            if (User.IsInRole("PremiumUser") || User.IsInRole("Administrator"))
+            {
+                <!-- todo Find better way to count purchases -->
+                if (@Model.Order.Sum(p => p.Antal) >= 3)
+                {
+                    <span class="tomasos-text">Thanks for being a Premium member; You get a 20% discount!</span><br/>
+                    multiplier = 0.8m;
+                }
+                if (@Model.Kund.Poang + @Model.Order.Sum(p => p.Antal)*10 >= 100)
+                {
+                    <!-- Known issue: If customer buys 19 expensive things, and 1 cheap, the cheap will be discounted twice.-->
+                    <span class="tomasos-text">You scored a loyalty discount; One of your dishes, free of charge!</span><br />
+                    var ammDiscounts = (int)Math.Floor((decimal)(@Model.Kund.Poang + (@Model.Order.Sum(p => p.Antal) * 10)) / 100);
+                    for (int i = 0; i < ammDiscounts; i++)
+                    {
+                        discount += @Model.Order.Min(p => p.Matratt.Pris);
+                    }
+                }
+            }
+            <span class="tomasos-text">Pris: @(Math.Round((Model.Order.Sum(p => p.Matratt.Pris * p.Antal) - discount) * multiplier)) :-</span>
             <span style="float: right"><a asp-controller="Order" asp-action="PrepareOrder" asp-route-order="@Model.Order" data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#cart"><input class="btn-success" type="button" value="Lägg beställningen"/></a></span>
         }
         else

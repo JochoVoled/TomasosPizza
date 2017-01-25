@@ -7,5 +7,6 @@ namespace TomasosPizza.ViewModels
     {
         public List<Matratt> Menu { get; set; } = new List<Matratt>();
         public List<BestallningMatratt> Order { get; set; } = new List<BestallningMatratt>();
+        public Kund Kund { get; set; }
     }
 }

@@ -87,7 +87,6 @@ namespace TomasosPizza.Controllers
 
         public IActionResult PrepareOrder()
         {
-            // get the order data
             Bestallning model = new Bestallning();
             var str = HttpContext.Session.GetString("Order");
             var order = JsonConvert.DeserializeObject<List<BestallningMatratt>>(str);
@@ -96,16 +95,11 @@ namespace TomasosPizza.Controllers
             var identity = _userManager.GetUserAsync(User).Result;
             var user = _context.Kund.SingleOrDefault(x => x.AnvandarNamn == identity.UserName);
 
-            //var id = int.Parse(HttpContext.Session.GetString("User"));
-            //var user = _context.Kund.FirstOrDefault(u => u.KundId == id);
-
             model.Kund = user;
-            // calculate price in method to make forward-compatible with discounts
             model.Totalbelopp = CalculatePrice(order, user);
             model.BestallningDatum = DateTime.Now;
             model.Levererad = false;
 
-            // Save to Session, so it can be loaded at CheckOut.
             var tmp = JsonConvert.SerializeObject(model);
             HttpContext.Session.SetString("FinalOrder", tmp);
             if (user.Gatuadress!=null && user.Postort!=null && user.Postnr!=null)
@@ -120,15 +114,22 @@ namespace TomasosPizza.Controllers
             if (User.IsInRole("PremiumUser"))
             {
                 //Köper den tre pizzor/ maträtter eller mer får den 20 % rabatt på beställningen.
-                decimal multiplier = order.Count >= 3 ? 0.8m : 1m;
+                decimal multiplier = 1m;
+                if(order.Sum(p => p.Antal) >= 3)
+                    multiplier = 0.8m;
+
                 int discount = 0;
                 //När den har 100 poäng ger det en gratis pizza vid en beställning.
-                if (user.Poang >= 100)
+                foreach (BestallningMatratt o in order)
                 {
-                    discount = order.Min(p => p.Matratt.Pris);
+                    user.Poang += (10*o.Antal);
+                    if (user.Poang < 100)
+                        continue;
+                    discount += order.Min(p => p.Matratt.Pris);
                     user.Poang -= 100;
                 }
-                return (int)Math.Round((order.Sum(x => x.Matratt.Pris) - discount) * multiplier,2);
+                          //Math.Round((Model.Order.Sum(p => p.Matratt.Pris * p.Antal) - discount) * multiplier))
+                return (int)Math.Round((order.Sum(x => x.Matratt.Pris*x.Antal) - discount) * multiplier);
             }
             else
             {
@@ -142,19 +143,10 @@ namespace TomasosPizza.Controllers
             var identity = _userManager.GetUserAsync(User).Result;
             var user = _context.Kund.SingleOrDefault(x => x.AnvandarNamn == identity.UserName);
 
-            //int userId = int.Parse(HttpContext.Session.GetString("User"));
-            //Kund user = _context.Kund.First(u => u.KundId == userId);
-
-            // only save to database if all required fields have actual values
             if (string.IsNullOrWhiteSpace(updatedUser.Gatuadress) || string.IsNullOrWhiteSpace(updatedUser.Postort) || string.IsNullOrWhiteSpace(updatedUser.Postnr))
             {
                 return RedirectToAction("OrderView", "Navigation");
             }
-
-            //if (!ModelState.IsValid)
-            //{
-            //    return RedirectToAction("OrderView", "Navigation");
-            //}
 
             // only update if any value has been changed
             if (updatedUser.Gatuadress != user.Gatuadress || updatedUser.Postort != user.Postort || updatedUser.Postnr != user.Postnr)
@@ -177,8 +169,6 @@ namespace TomasosPizza.Controllers
             };
             _context.Add(b);
 
-            // At Checkout(), add 10 points to Kund foreach line in Order if points < 100
-
             foreach (var matratt in order.BestallningMatratt)
             {
                 var m = new BestallningMatratt
@@ -188,7 +178,7 @@ namespace TomasosPizza.Controllers
                     Antal = matratt.Antal
                 };
                 _context.Add(m);
-                user.Poang += 10;
+                user.Poang = (user.Poang+ 10 * matratt.Antal)%100;
             }
             _context.SaveChanges();
             HttpContext.Session.Remove("FinalOrder");
