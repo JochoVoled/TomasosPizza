@@ -12,7 +12,7 @@ using TomasosPizza.ViewModels;
 
 namespace TomasosPizza.Controllers
 {
-    //[Authorize("Administrator")]
+    [Authorize(Roles="Administrator")]
     public class AdminController : Controller
     {
         private readonly TomasosContext _context;
